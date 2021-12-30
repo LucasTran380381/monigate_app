@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "369926935272",
+    "project_id": "swp-monigate",
+    "storage_bucket": "swp-monigate.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369926935272:android:b0d4d96a04ae790529af5d",
+        "android_client_info": {
+          "package_name": "com.example.fcm_consumer_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369926935272-6e6rslqgk66v4gqovrul07vtvc25koga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZMNlB4moOVIZg1OF54zdFHAdFH8-2uvw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369926935272-6e6rslqgk66v4gqovrul07vtvc25koga.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "369926935272-tc2gj29fa5erol06bpdop0h029cn1pt4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.lucas.monigate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369926935272:android:9cbe875192517c5f29af5d",
+        "android_client_info": {
+          "package_name": "dev.lucas.monigate_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369926935272-6e6rslqgk66v4gqovrul07vtvc25koga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZMNlB4moOVIZg1OF54zdFHAdFH8-2uvw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369926935272-6e6rslqgk66v4gqovrul07vtvc25koga.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "369926935272-tc2gj29fa5erol06bpdop0h029cn1pt4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.lucas.monigate"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

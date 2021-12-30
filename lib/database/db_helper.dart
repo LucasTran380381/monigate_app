@@ -3,7 +3,5 @@ class DbHelper {
 
   static final instance = DbHelper._();
 
-  showHelper() {
-    print('hello');
-  }
+  showHelper() {}
 }

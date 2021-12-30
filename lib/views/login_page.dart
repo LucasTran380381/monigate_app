@@ -30,11 +30,8 @@ class LoginPage extends StatelessWidget {
                   width: double.infinity,
                   color: Theme.of(context).primaryColor,
                   child: Text(
-                    'Login',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline4!
-                        .merge(const TextStyle(color: Colors.white)),
+                    'Đăng nhập',
+                    style: Theme.of(context).textTheme.headline4!.merge(const TextStyle(color: Colors.white)),
                   ),
                 ),
               ),
@@ -43,14 +40,13 @@ class LoginPage extends StatelessWidget {
                 left: 20,
                 right: 20,
                 child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
                         Text(
-                          'Welcome to Monigate',
+                          'Chào mừng bạn',
                           style: Theme.of(context).textTheme.headline5,
                         ),
                         const SizedBox(
@@ -63,31 +59,37 @@ class LoginPage extends StatelessWidget {
                               Obx(
                                 () => TextFormField(
                                   decoration: InputDecoration(
-                                    labelText: 'Username',
+                                    labelText: 'Tên đăng nhập',
                                     errorText: controller.errorText.value,
                                   ),
                                   textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.phone,
-                                  onSaved: (value) =>
-                                      controller.username = value,
-                                  validator: (value) =>
-                                      GetUtils.isEmail(value ?? '')
-                                          ? null
-                                          : 'Invalid email',
+                                  onSaved: (value) => controller.username = value,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Vui lòng nhập tên đăng nhập';
+                                    } else {
+                                      return controller.errorText.value;
+                                    }
+                                  },
                                 ),
                               ),
                               TextFormField(
                                 obscureText: true,
-                                decoration: InputDecoration(
-                                    focusColor: Theme.of(context).primaryColor,
-                                    labelText: 'P'
-                                        'assword'),
+                                onSaved: (value) => controller.password = value,
+                                decoration: InputDecoration(focusColor: Theme.of(context).primaryColor, labelText: 'Mật khẩu'),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Vui lòng nhập password';
+                                  } else {
+                                    return null;
+                                  }
+                                },
                               ),
                               Container(
                                 margin: const EdgeInsets.only(top: 20),
                                 width: double.infinity,
                                 child: const Text(
-                                  'forgot passsword',
+                                  'Quên mật khẩu',
                                   style: TextStyle(color: Colors.grey),
                                   textAlign: TextAlign.right,
                                 ),
@@ -99,13 +101,11 @@ class LoginPage extends StatelessWidget {
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(24)),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                                   ),
-                                  onPressed: controller.onLogin,
+                                  onPressed: controller.login,
                                   child: const Text(
-                                    'Login',
+                                    'Đăng nhập',
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ),
@@ -113,17 +113,6 @@ class LoginPage extends StatelessWidget {
                               const SizedBox(
                                 height: 20,
                               ),
-                              const Text('Or'),
-                              TextButton(
-                                onPressed: () {},
-                                child: Text(
-                                  'Register',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                              )
                             ],
                           ),
                         )
