@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../util.dart';
+import '../themes/color.dart';
 
 class CheckinStatusCard extends StatelessWidget {
   final int status;
@@ -12,7 +12,7 @@ class CheckinStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shadowColor: Util.primaryColor,
+      shadowColor: AppColor.primaryColor,
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -49,11 +49,11 @@ class CheckinStatusCard extends StatelessWidget {
     var color = Colors.black;
     switch (status) {
       case 100:
-        return Util.successColor;
+        return AppColor.successColor;
       case 200:
-        return Util.warningColor;
+        return AppColor.warningColor;
       case 210:
-        return Util.errorColor;
+        return AppColor.errorColor;
     }
     return color;
   }

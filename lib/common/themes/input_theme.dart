@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../util.dart';
+import 'color.dart';
 
 const inputTheme = InputDecorationTheme(
-    floatingLabelStyle: TextStyle(color: Util.primaryColor),
-    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Util.primaryColor)),
-    hoverColor: Util.primaryColor,
-    fillColor: Util.primaryColor,
-    focusColor: Util.primaryColor);
+    floatingLabelStyle: TextStyle(color: AppColor.primaryColor),
+    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColor.primaryColor)),
+    hoverColor: AppColor.primaryColor,
+    fillColor: AppColor.primaryColor,
+    focusColor: AppColor.primaryColor);

@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
 import 'package:monigate_app/controllers/login_controller.dart';
-import 'package:monigate_app/widgets/header_clippath.dart';
+import 'package:monigate_app/common/widgets/header_clippath.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);

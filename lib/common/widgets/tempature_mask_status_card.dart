@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:monigate_app/models/ui/face_mask_section_model.dart';
 
-import '../util.dart';
+import '../themes/color.dart';
 
 class TemperatureAndMarkStatus extends StatelessWidget {
   final double temperature;
@@ -69,9 +69,9 @@ class TemperatureSection extends StatelessWidget {
 
   Color getTemperatureColor() {
     if (temperature < 37.5) {
-      return Util.successColor;
+      return AppColor.successColor;
     } else {
-      return Util.errorColor;
+      return AppColor.errorColor;
     }
   }
 }
@@ -112,23 +112,23 @@ class FaceMaskSection extends StatelessWidget {
 
   FaceMaskInfo getFaceMaskInfo() {
     var title = 'Chưa có thông tin';
-    var color = Util.successColor;
-    var backgroundColor = Util.backgroundColor;
+    var color = AppColor.successColor;
+    var backgroundColor = AppColor.backgroundColor;
     switch (faceMaskStatus) {
       case 200:
         title = 'Khẩu trang hợp lệ';
         color = Colors.white;
-        backgroundColor = Util.successColor;
+        backgroundColor = AppColor.successColor;
         break;
       case 100:
         title = 'Không đeo khẩu trang';
         color = Colors.white;
-        backgroundColor = Util.errorColor;
+        backgroundColor = AppColor.errorColor;
         break;
       case 210:
         title = 'Khẩu trang sai';
         color = Colors.black;
-        backgroundColor = Util.warningColor;
+        backgroundColor = AppColor.warningColor;
         break;
     }
     return FaceMaskInfo(

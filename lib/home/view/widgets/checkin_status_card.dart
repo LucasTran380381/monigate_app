@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/models/checkin.dart';
 
-import '../../../util.dart';
+import '../../../common/themes/color.dart';
 
 class CheckinStatusCard extends ConsumerWidget {
   const CheckinStatusCard({
@@ -15,13 +15,46 @@ class CheckinStatusCard extends ConsumerWidget {
     final state = ref.watch(checkinProvider);
     return state.when(
         noCheckin: () {
-          return Text('hello');
+          return const ContentCard(
+            icon: Icon(Icons.help_outline_outlined),
+            title: 'Chưa có thông tin check-in',
+            color: Colors.black,
+          );
         },
         loading: () => const CircularProgressIndicator.adaptive(),
-        error: (String error) => const Text('Đã có lỗi xảy ra vui '
-            'lòng thử lại'),
+        error: (String error) => Text(
+              error,
+              style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColor.errorColor),
+            ),
         hasCheckin: (Checkin checkin) {
-          return Text('hello');
+          switch (checkin.status) {
+            case 100:
+              return const ContentCard(
+                  icon: Icon(
+                    Icons.check_circle,
+                    color: AppColor.successColor,
+                  ),
+                  title: 'Check-in thành công',
+                  color: AppColor.successColor);
+            case 200:
+              return const ContentCard(
+                icon: Icon(
+                  Icons.warning_outlined,
+                  color: AppColor.warningColor,
+                ),
+                title: 'Được phép cho vào',
+                color: AppColor.warningColor,
+              );
+            default:
+              return const ContentCard(
+                icon: Icon(
+                  Icons.error_outlined,
+                  color: AppColor.errorColor,
+                ),
+                title: 'Check-in thất bại',
+                color: AppColor.errorColor,
+              );
+          }
         });
   }
 }
@@ -41,7 +74,7 @@ class ContentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shadowColor: Util.primaryColor,
+      shadowColor: AppColor.primaryColor,
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),

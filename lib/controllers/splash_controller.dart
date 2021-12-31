@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:monigate_app/views/login_page.dart';
-import 'package:monigate_app/views/root_page.dart';
+import 'package:monigate_app/authentication/view/login_page.dart';
+import 'package:monigate_app/common/widgets/root_page.dart';
 
 class SplashController extends GetxController {
   final box = GetStorage();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../util.dart';
+import '../themes/color.dart';
 
 class NotHaveCheckinCard extends StatelessWidget {
   const NotHaveCheckinCard({Key? key}) : super(key: key);
@@ -10,7 +10,7 @@ class NotHaveCheckinCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
-        color: Util.backgroundColor,
+        color: AppColor.backgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
           padding: const EdgeInsets.all(10),

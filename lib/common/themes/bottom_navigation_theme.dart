@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../util.dart';
+import 'color.dart';
 
 const bottomNavigationTheme = BottomNavigationBarThemeData(
-  backgroundColor: Util.primaryColor,
+  backgroundColor: AppColor.primaryColor,
   selectedItemColor: Colors.white,
   unselectedItemColor: Colors.white70,
   type: BottomNavigationBarType.fixed,

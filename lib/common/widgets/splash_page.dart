@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:monigate_app/controllers/splash_controller.dart';
-import 'package:monigate_app/views/root_page.dart';
+import 'package:monigate_app/common/widgets/root_page.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({Key? key}) : super(key: key);

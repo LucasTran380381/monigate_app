@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:monigate_app/checkin_history/models/checkin_item.dart';
-import 'package:monigate_app/util.dart';
+import 'package:monigate_app/common/themes/color.dart';
 
 import 'item_title.dart';
 
@@ -36,17 +36,17 @@ class CheckinItemView extends StatelessWidget {
       case 100:
         return const Icon(
           Icons.check_circle_outlined,
-          color: Util.successColor,
+          color: AppColor.successColor,
         );
       case 200:
         return const Icon(
           Icons.report_problem_outlined,
-          color: Util.warningColor,
+          color: AppColor.warningColor,
         );
       default:
         return const Icon(
           Icons.error_outline_outlined,
-          color: Util.errorColor,
+          color: AppColor.errorColor,
         );
     }
   }

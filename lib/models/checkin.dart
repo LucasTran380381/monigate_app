@@ -27,4 +27,15 @@ class Checkin {
   /// to JSON. The implementation simply calls the private, generated
   /// helper method `_$EventToJson`.
   Map<String, dynamic> toJson() => _$CheckinToJson(this);
+
+  get statusTitle {
+    switch (status) {
+      case 100:
+        return 'Checkin thành công';
+      case 200:
+        return 'Lưu ý checkin';
+      case 110:
+        return 'Checkin thất bại';
+    }
+  }
 }

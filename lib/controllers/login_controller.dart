@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:monigate_app/services/auth_service.dart';
-import 'package:monigate_app/views/root_page.dart';
+import 'package:monigate_app/authentication/service/auth_service.dart';
+import 'package:monigate_app/common/widgets/root_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {

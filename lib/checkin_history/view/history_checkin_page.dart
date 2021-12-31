@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:monigate_app/checkin_history/widgets/checkin_list_view.dart';
-import 'package:monigate_app/util.dart';
+import 'package:monigate_app/checkin_history/view/widgets/checkin_list_view.dart';
+import 'package:monigate_app/common/themes/color.dart';
 
 import 'checkin_logic.dart';
 
@@ -18,9 +18,11 @@ class CheckinPage extends StatelessWidget {
           'Báo cáo điểm danh',
         ),
       ),
-      backgroundColor: Util.backgroundColor,
+      backgroundColor: AppColor.backgroundColor,
       body: RefreshIndicator(
-        onRefresh: () => controller.fetchCheckins(),
+        onRefresh: () {
+          return controller.fetchCheckins();
+        },
         child: Column(
           children: [
             const SizedBox(

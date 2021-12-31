@@ -11,12 +11,13 @@ import 'package:monigate_app/common/themes/bottom_navigation_theme.dart';
 import 'package:monigate_app/common/themes/button_theme.dart';
 import 'package:monigate_app/common/themes/input_theme.dart';
 import 'package:monigate_app/i18n/app_translation.dart';
-import 'package:monigate_app/util.dart';
-import 'package:monigate_app/views/splash_page.dart';
+import 'package:monigate_app/common/themes/color.dart';
+import 'package:monigate_app/common/widgets/splash_page.dart';
 
 Future<void> main() async {
   await GetStorage.init();
   await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -35,15 +36,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           elevatedButtonTheme: elevatedButtonTheme,
           textSelectionTheme: const TextSelectionThemeData(
-            cursorColor: Util.primaryColor, //thereby
+            cursorColor: AppColor.primaryColor, //thereby
           ),
           inputDecorationTheme: inputTheme,
           cardTheme: const CardTheme(
             elevation: 10,
           ),
-          progressIndicatorTheme: const ProgressIndicatorThemeData(circularTrackColor: Util.primaryColor),
-          shadowColor: Util.primaryColor.withOpacity(0.3),
-          primaryColor: Util.primaryColor,
+          progressIndicatorTheme: const ProgressIndicatorThemeData(circularTrackColor: AppColor.primaryColor),
+          shadowColor: AppColor.primaryColor.withOpacity(0.3),
+          primaryColor: AppColor.primaryColor,
           bottomNavigationBarTheme: bottomNavigationTheme,
           appBarTheme: AppBarTheme(
               shape: const RoundedRectangleBorder(

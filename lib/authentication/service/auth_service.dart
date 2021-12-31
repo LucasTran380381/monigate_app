@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:monigate_app/models/user.dart';
-import 'package:monigate_app/views/login_page.dart';
+import 'package:monigate_app/authentication/view/login_page.dart';
 
 class AuthService {
   final apiUrl = dotenv.env['apiUrl'];

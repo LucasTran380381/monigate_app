@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/controllers/menu_controller.dart';
-import 'package:monigate_app/util.dart';
+import 'package:monigate_app/common/themes/color.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -55,7 +55,7 @@ class MenuListView extends StatelessWidget {
     final MenuController controller = Get.find();
     return Card(
       elevation: 5,
-      shadowColor: Util.primaryColor,
+      shadowColor: AppColor.primaryColor,
       margin: const EdgeInsets.all(20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: SingleChildScrollView(

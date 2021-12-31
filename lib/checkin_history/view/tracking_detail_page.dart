@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/controllers/tracking_detail_controller.dart';
 
-import '../util.dart';
+import '../../common/themes/color.dart';
 
 class TrackingDetailPage extends StatelessWidget {
   const TrackingDetailPage({Key? key}) : super(key: key);
@@ -91,14 +91,14 @@ class ContactsListView extends StatelessWidget {
           child: Text(
             'Contacts user',
             textAlign: TextAlign.left,
-            style: Theme.of(context).textTheme.headline6!.merge(TextStyle(color: Util.primaryColor.withOpacity(0.7))),
+            style: Theme.of(context).textTheme.headline6!.merge(TextStyle(color: AppColor.primaryColor.withOpacity(0.7))),
           ),
         ),
         Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           margin: const EdgeInsets.fromLTRB(20, 20, 20, 20),
           elevation: 5,
-          shadowColor: Util.primaryColor,
+          shadowColor: AppColor.primaryColor,
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return ListTile(

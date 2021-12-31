@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../util.dart';
+import '../themes/color.dart';
 
 class MyHeader extends StatelessWidget {
   final String? title;
@@ -17,7 +17,7 @@ class MyHeader extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.1,
       width: double.infinity,
       decoration: const BoxDecoration(
-          color: Util.primaryColor,
+          color: AppColor.primaryColor,
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(24),
               bottomRight: Radius.circular(24))),

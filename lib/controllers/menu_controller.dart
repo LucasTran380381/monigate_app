@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:monigate_app/models/user.dart';
-import 'package:monigate_app/services/auth_service.dart';
+import 'package:monigate_app/authentication/service/auth_service.dart';
 
 class MenuController extends GetxController {
   final box = GetStorage();

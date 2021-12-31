@@ -7,7 +7,9 @@ final checkinProvider = StateNotifierProvider<CheckinNotifier, CheckinState>((re
 });
 
 class CheckinNotifier extends StateNotifier<CheckinState> {
-  CheckinNotifier(this._checkinService) : super(const CheckinState.loading());
+  CheckinNotifier(this._checkinService) : super(const CheckinState.loading()) {
+    fetchCheckin();
+  }
   final CheckinService _checkinService;
 
   fetchCheckin() async {

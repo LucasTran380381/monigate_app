@@ -1,8 +1,11 @@
 extension DateTimeExtenion on DateTime {
   int get timestamp => millisecondsSinceEpoch + 420 * 60 * 1000;
+
 //  gmt +7 offset 420min
 
   String get shortFormat => '$formattedHour:$formattedMinute $formattedDay/$month/$year';
+
+  String get shortFormatDate => '$formattedDay/$formattedMonth/$year';
 
   String get formattedMinute => minute < 10 ? '0$minute' : minute.toString();
 
