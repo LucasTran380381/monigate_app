@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/common/providers/user_provider.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
+import 'package:monigate_app/contact_tracing/view/background_fect_page.dart';
+import 'package:monigate_app/contact_tracing/view/contact_tracing_page.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/home/view/widgets/checkin_status_card.dart';
 import 'package:monigate_app/home/view/widgets/masks_status_temperature_card.dart';
@@ -50,6 +52,22 @@ class HomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12)),
             child: Column(
               children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                      return const ContactTracingPage();
+                    }));
+                  },
+                  child: const Text('test bluetooth'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                      return const BackgroundFetchPage();
+                    }));
+                  },
+                  child: const Text('test background'),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -62,12 +80,6 @@ class HomePage extends StatelessWidget {
                       DeviceDisplayBrightness.resetBrightness();
                     }
                   },
-                  // child: QrImage(
-                  //   data:
-                  //       '${controller.currentUser.id}, ${TiengViet.parse(controller.currentUser.firstName)}, ${TiengViet.parse(controller.currentUser.lastName)}',
-                  //   version: QrVersions.auto,
-                  //   size: 200,
-                  // ),
                   child: const QrCode(),
                 ),
                 const Text(
