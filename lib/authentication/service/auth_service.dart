@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:monigate_app/models/user.dart';
 import 'package:monigate_app/authentication/view/login_page.dart';
+import 'package:monigate_app/models/user.dart';
 
 class AuthService {
   final apiUrl = dotenv.env['apiUrl'];
@@ -13,10 +14,8 @@ class AuthService {
   final box = GetStorage();
 
   Future<User> login(String username, String password) async {
-    final body = jsonEncode({
-      'username': username,
-      'password': password,
-    });
+    final firebaseToken = await FirebaseMessaging.instance.getToken();
+    final body = jsonEncode({'username': username, 'password': password, 'fireBaseToken': firebaseToken});
 
     final resp = await dio.post('$apiUrl/Account/login', data: body);
     final map = resp.data as Map<String, dynamic>;
