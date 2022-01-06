@@ -1,5 +1,5 @@
-import 'package:flutter_ble_lib_ios_15/flutter_ble_lib.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_scan_bluetooth/flutter_scan_bluetooth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final bluetoothScannerServiceProvider = Provider((ref) {
@@ -11,12 +11,16 @@ class BluetoothScannerService {
 
   scanDevice() async {
     var tracing = [];
-    print('press');
-    BleManager().startPeripheralScan().listen((result) {
-      print('id:${result.peripheral.identifier}, name:${result.peripheral.name}');
-    }, onError: (error) {
-
+    print('scan bluetooth');
+    final bluetooth = FlutterScanBluetooth();
+    bluetooth.scanStopped.listen((state) {
+      print('stopped: $state');
     });
+    bluetooth.startScan(pairedDevices: false);
+    bluetooth.devices.listen((device) {
+      print('name: ${device.name}, mac: ${device.address}');
+    });
+
     // await FlutterBluetoothSerial.instance.cancelDiscovery();
     // final isDiscovering = await FlutterBluetoothSerial.instance.isDiscovering;
     // if (isDiscovering ?? false) return;

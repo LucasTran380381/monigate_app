@@ -300,13 +300,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_ble_lib_ios_15:
-    dependency: "direct main"
-    description:
-      name: flutter_ble_lib_ios_15
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.5.2"
   flutter_bluetooth_serial:
     dependency: "direct main"
     description:
@@ -356,6 +349,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  flutter_scan_bluetooth:
+    dependency: "direct main"
+    description:
+      name: flutter_scan_bluetooth
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter

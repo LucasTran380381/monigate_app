@@ -24,7 +24,7 @@ Widget backgroundFetchPage(WidgetRef ref) {
                   const Text('Chua có thông tin tracing'),
                   TextButton(
                     onPressed: () async {
-                      // await Future.delayed(const Duration(seconds: 10));
+                      await Future.delayed(const Duration(seconds: 10));
                       ref.read(bluetoothScannerServiceProvider).scanDevice();
                     },
                     child: const Text('Scan device'),

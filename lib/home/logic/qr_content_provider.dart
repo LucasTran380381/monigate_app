@@ -15,7 +15,6 @@ final qrContentProvider = Provider<AsyncValue<String>>((ref) {
   final firstName = TiengViet.parse(user.value!.firstName);
   final lastName = TiengViet.parse(user.value!.lastName);
   final id = user.value!.id;
-  final token = deviceId.value;
 
-  return AsyncValue.data('$id, $firstName, $lastName, $token');
+  return AsyncValue.data('$id, $firstName, $lastName');
 });
