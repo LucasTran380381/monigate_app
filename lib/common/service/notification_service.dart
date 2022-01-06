@@ -6,13 +6,19 @@ final notificationPluginProvider = Provider<FlutterLocalNotificationsPlugin>((re
 });
 
 final notificationServiceProvider = Provider<NotificationService>((ref) {
-  return NotificationService(ref.read(notificationPluginProvider));
+  return NotificationService(ref);
 });
 
 class NotificationService {
-  NotificationService(this._notification);
+  NotificationService(this._ref) {
+    _notification = _ref.watch(notificationPluginProvider);
+    _notification.initialize(
+        const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher'), iOS: IOSInitializationSettings()),
+        onSelectNotification: _handleSelectNotification);
+  }
 
-  final FlutterLocalNotificationsPlugin _notification;
+  late final FlutterLocalNotificationsPlugin _notification;
+  final Ref _ref;
 
   showNotification(String? title, String? body, String? payload) async {
     _notification.show(23423434, title, body, _setupNotificationDetail(), payload: payload);
@@ -23,5 +29,9 @@ class NotificationService {
         android: AndroidNotificationDetails('channel id', 'channel name',
             channelDescription: 'channel description', importance: Importance.max, priority: Priority.high, icon: '@mipmap/ic_launcher'),
         iOS: IOSNotificationDetails());
+  }
+
+  _handleSelectNotification(String? payload) {
+    print('$payload');
   }
 }
