@@ -18,7 +18,7 @@ class BluetoothScannerService {
     });
     bluetooth.startScan(pairedDevices: false);
     bluetooth.devices.listen((device) {
-      print('name: ${device.name}, mac: ${device.address}');
+      print('name: ${device.name}, mac: ${device.address}, nearby: ${device.nearby} ');
     });
 
     // await FlutterBluetoothSerial.instance.cancelDiscovery();
