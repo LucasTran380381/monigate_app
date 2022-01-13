@@ -21,7 +21,12 @@ Widget contactTracingPage(WidgetRef ref) {
                   );
                 },
                 itemCount: devices.length,
-              )));
+              ),
+          empty: () {
+            return const Center(
+              child: Text('Not scanned device'),
+            );
+          }));
 }
 
 @cwidget

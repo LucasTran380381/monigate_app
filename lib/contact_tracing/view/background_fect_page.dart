@@ -1,66 +1,108 @@
-import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:monigate_app/contact_tracing/logic/contact_tracing_provider.dart';
-import 'package:monigate_app/contact_tracing/services/bluetooth_scanner_service.dart';
+import 'package:monigate_app/contact_tracing/logic/scan_service_state_provider.dart';
 
 part 'background_fect_page.g.dart';
 
 @cwidget
 Widget backgroundFetchPage(WidgetRef ref) {
-  final state = ref.watch(contactTracingProvider);
+  final state = ref.watch(contactTracingStateProvider);
   return Scaffold(
     floatingActionButton: const BackgroundTaskButtonBuilder(),
     body: state.when(
-        loading: () => const Center(child: CircularProgressIndicator.adaptive()),
-        error: (Object error, StackTrace? stackTrace) => Center(child: Text('error $error')),
-        data: (List<String> data) => data.isEmpty
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text('Chua có thông tin tracing'),
-                  TextButton(
-                    onPressed: () async {
-                      await Future.delayed(const Duration(seconds: 10));
-                      ref.read(bluetoothScannerServiceProvider).scanDevice();
-                    },
-                    child: const Text('Scan device'),
-                  ),
-                ],
-              )
-            : Column(
+        data: (tracing) => SafeArea(
+              child: Column(
                 children: [
                   TextButton(
                     onPressed: () {
-                      ref.read(bluetoothScannerServiceProvider).clearHistory();
+                      ref.read(contactTracingStateProvider.notifier).clearHistory();
                     },
-                    child: Text('clear history'),
+                    child: const Text('clear history'),
                   ),
                   Expanded(
                     child: ListView.builder(
                       itemBuilder: (BuildContext context, int index) {
+                        final element = tracing[index];
                         return ListTile(
-                          title: Text(data[index]),
+                          title: Text('address: ${element.macAddress}, rssi: ${element.rssi}'),
                         );
                       },
-                      itemCount: data.length,
+                      itemCount: tracing.length,
                     ),
                   ),
                 ],
-              )),
+              ),
+            ),
+        initial: () {
+          return SafeArea(
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No start service scan'),
+                  TextButton(
+                    onPressed: () {
+                      ref.read(scanServiceStateProvider.notifier).startService();
+                    },
+                    child: const Text('Start service'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      ref.read(contactTracingStateProvider.notifier).getContactTracing();
+                    },
+                    child: const Text('Get contact tracing'),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+        empty: () {
+          return Column(
+            children: [
+              const Text('No scanned device'),
+              TextButton(
+                onPressed: () {
+                  ref.read(contactTracingStateProvider.notifier).getContactTracing();
+                },
+                child: const Text('Retry data'),
+              ),
+            ],
+          );
+        }),
   );
 }
 
 @cwidget
 Widget backgroundTaskButtonBuilder(WidgetRef ref) {
-  return FloatingActionButton(
-    onPressed: () async {
-      final status = await BackgroundFetch.start();
-      print('$status');
-    },
-    child: Text('test'),
-  );
+  final state = ref.watch(scanServiceStateProvider);
+  return state.when(stopped: () {
+    return FloatingActionButton(
+      child: const Icon(Icons.search_outlined),
+      onPressed: () {
+        ref.read(scanServiceStateProvider.notifier).startService();
+      },
+    );
+  }, running: () {
+    return FloatingActionButton(
+      child: const Icon(
+        Icons.done_outlined,
+      ),
+      onPressed: () {
+        ref.read(scanServiceStateProvider.notifier).stopService();
+      },
+    );
+  }, loading: () {
+    return FloatingActionButton(
+      child: const CircularProgressIndicator.adaptive(),
+      onPressed: () {
+        ref.read(scanServiceStateProvider.notifier).startService();
+      },
+    );
+  });
 }

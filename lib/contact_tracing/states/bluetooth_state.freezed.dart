@@ -30,6 +30,10 @@ class _$BluetoothStateTearOff {
     );
   }
 
+  Empty empty() {
+    return const Empty();
+  }
+
   Initial initial() {
     return const Initial();
   }
@@ -45,6 +49,7 @@ mixin _$BluetoothState {
     required TResult Function(String error) error,
     required TResult Function(List<BluetoothDevice> devices, bool isScanning)
         data,
+    required TResult Function() empty,
     required TResult Function() initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -52,6 +57,7 @@ mixin _$BluetoothState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(String error)? error,
     TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
     TResult Function()? initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -59,6 +65,7 @@ mixin _$BluetoothState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String error)? error,
     TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
     TResult Function()? initial,
     required TResult orElse(),
   }) =>
@@ -67,6 +74,7 @@ mixin _$BluetoothState {
   TResult map<TResult extends Object?>({
     required TResult Function(Error value) error,
     required TResult Function(Data value) data,
+    required TResult Function(Empty value) empty,
     required TResult Function(Initial value) initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -74,6 +82,7 @@ mixin _$BluetoothState {
   TResult? mapOrNull<TResult extends Object?>({
     TResult Function(Error value)? error,
     TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
     TResult Function(Initial value)? initial,
   }) =>
       throw _privateConstructorUsedError;
@@ -81,6 +90,7 @@ mixin _$BluetoothState {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Error value)? error,
     TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
     TResult Function(Initial value)? initial,
     required TResult orElse(),
   }) =>
@@ -169,6 +179,7 @@ class _$Error implements Error {
     required TResult Function(String error) error,
     required TResult Function(List<BluetoothDevice> devices, bool isScanning)
         data,
+    required TResult Function() empty,
     required TResult Function() initial,
   }) {
     return error(this.error);
@@ -179,6 +190,7 @@ class _$Error implements Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(String error)? error,
     TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
     TResult Function()? initial,
   }) {
     return error?.call(this.error);
@@ -189,6 +201,7 @@ class _$Error implements Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String error)? error,
     TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
     TResult Function()? initial,
     required TResult orElse(),
   }) {
@@ -203,6 +216,7 @@ class _$Error implements Error {
   TResult map<TResult extends Object?>({
     required TResult Function(Error value) error,
     required TResult Function(Data value) data,
+    required TResult Function(Empty value) empty,
     required TResult Function(Initial value) initial,
   }) {
     return error(this);
@@ -213,6 +227,7 @@ class _$Error implements Error {
   TResult? mapOrNull<TResult extends Object?>({
     TResult Function(Error value)? error,
     TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
     TResult Function(Initial value)? initial,
   }) {
     return error?.call(this);
@@ -223,6 +238,7 @@ class _$Error implements Error {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Error value)? error,
     TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
     TResult Function(Initial value)? initial,
     required TResult orElse(),
   }) {
@@ -317,6 +333,7 @@ class _$Data implements Data {
     required TResult Function(String error) error,
     required TResult Function(List<BluetoothDevice> devices, bool isScanning)
         data,
+    required TResult Function() empty,
     required TResult Function() initial,
   }) {
     return data(devices, isScanning);
@@ -327,6 +344,7 @@ class _$Data implements Data {
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(String error)? error,
     TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
     TResult Function()? initial,
   }) {
     return data?.call(devices, isScanning);
@@ -337,6 +355,7 @@ class _$Data implements Data {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String error)? error,
     TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
     TResult Function()? initial,
     required TResult orElse(),
   }) {
@@ -351,6 +370,7 @@ class _$Data implements Data {
   TResult map<TResult extends Object?>({
     required TResult Function(Error value) error,
     required TResult Function(Data value) data,
+    required TResult Function(Empty value) empty,
     required TResult Function(Initial value) initial,
   }) {
     return data(this);
@@ -361,6 +381,7 @@ class _$Data implements Data {
   TResult? mapOrNull<TResult extends Object?>({
     TResult Function(Error value)? error,
     TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
     TResult Function(Initial value)? initial,
   }) {
     return data?.call(this);
@@ -371,6 +392,7 @@ class _$Data implements Data {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Error value)? error,
     TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
     TResult Function(Initial value)? initial,
     required TResult orElse(),
   }) {
@@ -388,6 +410,121 @@ abstract class Data implements BluetoothState {
   bool get isScanning;
   @JsonKey(ignore: true)
   $DataCopyWith<Data> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $EmptyCopyWith<$Res> {
+  factory $EmptyCopyWith(Empty value, $Res Function(Empty) then) =
+      _$EmptyCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class _$EmptyCopyWithImpl<$Res> extends _$BluetoothStateCopyWithImpl<$Res>
+    implements $EmptyCopyWith<$Res> {
+  _$EmptyCopyWithImpl(Empty _value, $Res Function(Empty) _then)
+      : super(_value, (v) => _then(v as Empty));
+
+  @override
+  Empty get _value => super._value as Empty;
+}
+
+/// @nodoc
+
+class _$Empty implements Empty {
+  const _$Empty();
+
+  @override
+  String toString() {
+    return 'BluetoothState.empty()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is Empty);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String error) error,
+    required TResult Function(List<BluetoothDevice> devices, bool isScanning)
+        data,
+    required TResult Function() empty,
+    required TResult Function() initial,
+  }) {
+    return empty();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(String error)? error,
+    TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
+    TResult Function()? initial,
+  }) {
+    return empty?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String error)? error,
+    TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
+    TResult Function()? initial,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Error value) error,
+    required TResult Function(Data value) data,
+    required TResult Function(Empty value) empty,
+    required TResult Function(Initial value) initial,
+  }) {
+    return empty(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(Error value)? error,
+    TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
+    TResult Function(Initial value)? initial,
+  }) {
+    return empty?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Error value)? error,
+    TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
+    TResult Function(Initial value)? initial,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Empty implements BluetoothState {
+  const factory Empty() = _$Empty;
 }
 
 /// @nodoc
@@ -431,6 +568,7 @@ class _$Initial implements Initial {
     required TResult Function(String error) error,
     required TResult Function(List<BluetoothDevice> devices, bool isScanning)
         data,
+    required TResult Function() empty,
     required TResult Function() initial,
   }) {
     return initial();
@@ -441,6 +579,7 @@ class _$Initial implements Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(String error)? error,
     TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
     TResult Function()? initial,
   }) {
     return initial?.call();
@@ -451,6 +590,7 @@ class _$Initial implements Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String error)? error,
     TResult Function(List<BluetoothDevice> devices, bool isScanning)? data,
+    TResult Function()? empty,
     TResult Function()? initial,
     required TResult orElse(),
   }) {
@@ -465,6 +605,7 @@ class _$Initial implements Initial {
   TResult map<TResult extends Object?>({
     required TResult Function(Error value) error,
     required TResult Function(Data value) data,
+    required TResult Function(Empty value) empty,
     required TResult Function(Initial value) initial,
   }) {
     return initial(this);
@@ -475,6 +616,7 @@ class _$Initial implements Initial {
   TResult? mapOrNull<TResult extends Object?>({
     TResult Function(Error value)? error,
     TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
     TResult Function(Initial value)? initial,
   }) {
     return initial?.call(this);
@@ -485,6 +627,7 @@ class _$Initial implements Initial {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Error value)? error,
     TResult Function(Data value)? data,
+    TResult Function(Empty value)? empty,
     TResult Function(Initial value)? initial,
     required TResult orElse(),
   }) {

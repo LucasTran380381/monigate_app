@@ -7,5 +7,6 @@ part 'bluetooth_state.freezed.dart';
 class BluetoothState with _$BluetoothState {
   const factory BluetoothState.error(String error) = Error;
   const factory BluetoothState.data(List<BluetoothDevice> devices, bool isScanning) = Data;
+  const factory BluetoothState.empty() = Empty;
   const factory BluetoothState.initial() = Initial;
 }

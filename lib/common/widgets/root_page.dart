@@ -2,11 +2,13 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/checkin_history/view/history_checkin_page.dart';
 import 'package:monigate_app/common/providers/bottom_navigation_index_provider.dart';
 import 'package:monigate_app/common/service/notification_service.dart';
+import 'package:monigate_app/contact_tracing/logic/scan_service_state_provider.dart';
 import 'package:monigate_app/contact_tracing/services/bluetooth_scanner_service.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
 
@@ -23,7 +25,12 @@ class RootPage extends ConsumerStatefulWidget {
 class _RootPageState extends ConsumerState<RootPage> {
   @override
   void initState() {
-    initPlatformState();
+    // initPlatformState();
+
+    //init scan service
+    ref.read(scanServiceStateProvider);
+
+    FlutterBackground.enableBackgroundExecution();
     FirebaseMessaging.onMessage.listen((message) {
       final String? checkinStatus = message.data['checkinStatusCode'];
       if (checkinStatus != null) {

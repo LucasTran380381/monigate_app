@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -9,17 +11,38 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monigate_app/common/themes/bottom_navigation_theme.dart';
 import 'package:monigate_app/common/themes/button_theme.dart';
-import 'package:monigate_app/common/themes/input_theme.dart';
-import 'package:monigate_app/i18n/app_translation.dart';
 import 'package:monigate_app/common/themes/color.dart';
+import 'package:monigate_app/common/themes/input_theme.dart';
 import 'package:monigate_app/common/widgets/splash_page.dart';
+import 'package:monigate_app/i18n/app_translation.dart';
 
 Future<void> main() async {
   await GetStorage.init();
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  const androidConfig = FlutterBackgroundAndroidConfig(
+    notificationTitle: "flutter_background example app",
+    notificationText: "Background notification for keeping the example app running in the background",
+    notificationImportance: AndroidNotificationImportance.Default,
+    notificationIcon: AndroidResource(name: 'background_icon', defType: 'drawable'), // Default is ic_launcher from folder mipmap
+  );
+  FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
+  bool success = await FlutterBackground.initialize(androidConfig: androidConfig);
   runApp(const ProviderScope(child: MyApp()));
+}
+
+Future<void> _handleBackgroundMessage(RemoteMessage message) async {
+  print('trigger background notification');
+  // FlutterBluetoothSerial.instance.startDiscovery().listen((result) {
+  //   final device = result.device;
+  //   print('name: ${device.name}, rssi: ${result.rssi}');
+  // });
+  // final bluetooth = FlutterScanBluetooth();
+  // bluetooth.startScan();
+  // bluetooth.devices.listen((device) {
+  //   print(device.name);
+  // });
 }
 
 class MyApp extends StatelessWidget {

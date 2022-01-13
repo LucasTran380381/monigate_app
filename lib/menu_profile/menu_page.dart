@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:monigate_app/controllers/menu_controller.dart';
 import 'package:monigate_app/common/themes/color.dart';
+import 'package:monigate_app/contact_tracing/logic/scan_service_state_provider.dart';
+import 'package:monigate_app/controllers/menu_controller.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -79,10 +81,39 @@ class MenuListView extends StatelessWidget {
               height: 1,
               indent: 24 + 20 + 20,
             ),
-            ListTile(
-              title: Text('menu_edit_user_info'.tr),
-              leading: const Icon(Icons.edit),
+            Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(scanServiceStateProvider);
+                return state.when(loading: () {
+                  return ListTile(
+                    title: const Text('Truy vết tiếp xúc'),
+                    leading: child!,
+                  );
+                }, running: () {
+                  return SwitchListTile.adaptive(
+                    secondary: child!,
+                    title: const Text('Truy vết tiếp xúc'),
+                    value: true,
+                    onChanged: (bool value) {
+                      ref.read(scanServiceStateProvider.notifier).stopService();
+                    },
+                  );
+                }, stopped: () {
+                  return SwitchListTile.adaptive(
+                    secondary: child!,
+                    title: const Text('Truy vết tiếp xúc'),
+                    onChanged: (bool value) {
+                      ref.read(scanServiceStateProvider.notifier).startService();
+                    },
+                    value: false,
+                  );
+                });
+              },
+              child: const Icon(
+                Icons.health_and_safety_outlined,
+              ),
             ),
+
             const Divider(
               height: 1,
               indent: 24 + 20 + 20,
