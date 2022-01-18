@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
+import 'package:monigate_app/contact_tracing/services/ble_service.dart';
 import 'package:monigate_app/controllers/menu_controller.dart';
 
 class MenuPage extends StatelessWidget {
@@ -93,6 +94,17 @@ class MenuListView extends StatelessWidget {
             //   title: Text('menu_tracking_contact'.tr),
             //   leading: const Icon(Icons.bluetooth),
             // ),
+            Consumer(
+              builder: (context, ref, child) {
+                return TextButton(
+                  onPressed: () async {
+                    final result = await ref.read(tracingServiceProvider).getHistory();
+                    print('sharepref: $result');
+                  },
+                  child: Text('get data'),
+                );
+              },
+            ),
             const Divider(
               height: 1,
               indent: 24 + 20 + 20,
@@ -101,6 +113,7 @@ class MenuListView extends StatelessWidget {
               builder: (context, ref, child) {
                 final state = ref.watch(tracingProvider);
                 return SwitchListTile.adaptive(
+                  title: const Text('tracing'),
                   value: state == TracingState.running,
                   onChanged: (bool value) {
                     ref.read(tracingProvider.notifier).toggleService();

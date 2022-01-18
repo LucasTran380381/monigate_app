@@ -16,16 +16,20 @@ import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.ParcelUuid;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class BleService extends Service{
@@ -239,6 +243,7 @@ public class BleService extends Service{
                 listFilter.add(scanFilterAndroid.build());
 
 
+
                 // Callback khi scan bluetooth
                 mScanCallback = new ScanCallback() {
                     @Override
@@ -251,8 +256,11 @@ public class BleService extends Service{
                         int rssi = result.getRssi();
                         String address = result.getDevice().getAddress();
                         List<ParcelUuid> serviceUUIDs = result.getScanRecord().getServiceUuids();
-                        Log.e(TAG, "Detect on Scan " + deviceName + " " + rssi + "  " + address
-                                + " Service : " + serviceUUIDs + " Manufacture " + new String(blidContact, StandardCharsets.UTF_8));
+                        Log.d(TAG, "put to share pref");
+                        final SharedPreferences flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+                        flutterPref.edit().putString("flutter.scan", UUID.randomUUID().toString()).apply();
+//                        Log.e(TAG, "Detect on Scan " + deviceName + " " + rssi + "  " + address
+//                                + " Service : " + serviceUUIDs + " Manufacture " + new String(blidContact, StandardCharsets.UTF_8));
                     }
 
                     @Override

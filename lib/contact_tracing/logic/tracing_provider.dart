@@ -16,12 +16,12 @@ class TracingNotifier extends StateNotifier<TracingState> {
   final Ref _ref;
 
   _startService() {
-    _ref.read(bleServiceProvider).startBle();
+    _ref.read(tracingServiceProvider).startBle();
     state = TracingState.running;
   }
 
   _stopService() {
-    _ref.read(bleServiceProvider).stopBle();
+    _ref.read(tracingServiceProvider).stopBle();
     state = TracingState.stopped;
   }
 
