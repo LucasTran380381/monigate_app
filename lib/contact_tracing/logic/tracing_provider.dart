@@ -21,7 +21,7 @@ class TracingNotifier extends StateNotifier<TracingState> {
     state = TracingState.running;
   }
 
-  _stopService() {
+  stopService() {
     _ref.read(tracingServiceProvider).stopBle();
     state = TracingState.stopped;
   }
@@ -29,7 +29,7 @@ class TracingNotifier extends StateNotifier<TracingState> {
   Future<void> toggleService() async {
     if (state == TracingState.running) {
       await BackgroundFetch.stop();
-      _stopService();
+      stopService();
       return;
     }
 

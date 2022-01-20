@@ -104,18 +104,12 @@ class MenuListView extends StatelessWidget {
                       },
                       child: Text('sync now'),
                     ),
-                    // TextButton(
-                    //   onPressed: () async {
-                    //     final pref = await SharedPreferences.getInstance();
-                    //     await pref.reload();
-                    //     final json = pref.getString('tracing_test');
-                    //     if (json != null) {
-                    //       final List decode = jsonDecode(json);
-                    //       final tracings = decode.map((element) => Tracing.fromJson(element)).toList();
-                    //     }
-                    //   },
-                    //   child: Text('get sync data'),
-                    // )
+                    TextButton(
+                      onPressed: () async {
+                        ref.read(tracingServiceProvider).clearTracingData();
+                      },
+                      child: Text('clear sync data'),
+                    )
                   ],
                 );
               },

@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import dev.lucas.monigate_app.models.CloseContact;
 import dev.lucas.monigate_app.models.Contact;
 import dev.lucas.monigate_app.models.ContactTracing;
 
@@ -65,8 +66,7 @@ public class BleService extends Service {
 
     private static final String TAG = "BLEService";
     private final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-    private final SharedPreferences flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
-    private List<ContactTracing> contactTracings;
+    private SharedPreferences flutterPref;
 
 
     @Nullable
@@ -88,17 +88,20 @@ public class BleService extends Service {
 
         initStatus();
 
+        flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+
         //TODO: Write Timer for Request permission here
 
-        _loadContactTracings();
     }
 
-    private void _loadContactTracings() {
-        contactTracings = new ArrayList<>();
-        String json = flutterPref.getString("contact_tracing", "not found");
+    private List<CloseContact> _loadContactTracings() {
+        String json = flutterPref.getString("flutter.close_contacts", "not found");
+        Log.d(TAG, "_loadContactTracings: " + json);
         if (!json.equals("not found")) {
-            contactTracings.addAll(Arrays.asList(gson.fromJson(json, ContactTracing[].class)));
+            return new ArrayList<>(Arrays.asList(gson.fromJson(json, CloseContact[].class)));
         }
+
+        return new ArrayList<>();
     }
 
     /**
@@ -291,7 +294,7 @@ public class BleService extends Service {
                         mStatusScanBle = STATUS_SCANNING;
                         byte[] blidContact = result.getScanRecord().getManufacturerSpecificData(AppConstants.BLE_ID);
 //                        String deviceName = result.getDevice().getName();
-//                        int rssi = result.getRssi();
+                        int rssi = result.getRssi();
 //                        String address = result.getDevice().getAddress();
 //                        List<ParcelUuid> serviceUUIDs = result.getScanRecord().getServiceUuids();
 //                        Log.d(TAG, "put to share pref");
@@ -299,7 +302,8 @@ public class BleService extends Service {
 //                        flutterPref.edit().putString("flutter.scan", UUID.randomUUID().toString()).apply();
                         final String userId = new String(blidContact, StandardCharsets.UTF_8);
                         final Date time = new Date();
-                        Log.d(TAG, "onScanResult: found userId: " + userId + " in time: " + time);
+//                        Log.d(TAG, "onScanResult: found userId: " + userId + " in time: " + time + " with rssi: " +rssi);
+
 
                         _saveContact(userId, time);
 
@@ -354,16 +358,28 @@ public class BleService extends Service {
     }
 
     private void _saveContact(String userId, Date time) {
-        _loadContactTracings();
-        ContactTracing foundedContactTracing = _getContactTracing(time);
-        if (foundedContactTracing == null){
-            foundedContactTracing = new ContactTracing(time,new ArrayList<>());
-            contactTracings.add(foundedContactTracing);
+        List<CloseContact> contacts = _loadContactTracings();
+
+        for (CloseContact contact : contacts) {
+//            if exist in contact not save
+            if (contact.equals(new CloseContact(userId, time))) {
+                return;
+            }
         }
 
-        _addNewContact(foundedContactTracing, userId);
+        contacts.add(new CloseContact(userId, time));
 
-        flutterPref.edit().putString("contact_tracing", gson.toJson(contactTracings)).apply();
+//        Log.d(TAG, "_saveContact: " + gson.toJson(contacts));
+//        ContactTracing foundedContactTracing = _getContactTracing(time);
+//        if (foundedContactTracing == null){
+//            foundedContactTracing = new ContactTracing(time,new ArrayList<>());
+//            contactTracings.add(foundedContactTracing);
+//        }
+//
+//        _addNewContact(foundedContactTracing, userId);
+
+
+        flutterPref.edit().putString("flutter.close_contacts", gson.toJson(contacts)).apply();
     }
 
     private void _addNewContact(ContactTracing contactTracing, String userId) {
@@ -373,18 +389,9 @@ public class BleService extends Service {
             }
         }
 
-        contactTracing.getContacts().add(new Contact(userId,false));
+        contactTracing.getContacts().add(new Contact(userId, false));
     }
 
-    private ContactTracing _getContactTracing(Date time) {
-        for (ContactTracing contactTracing : contactTracings) {
-            Date contactDate = contactTracing.getDate();
-            if (time.getDate() == contactDate.getDate() && time.getMonth() == contactDate.getMonth() && time.getYear() == contactDate.getYear())
-                return contactTracing;
-        }
-
-        return null;
-    }
 
     private boolean _checkDuplicateDevice(TracingModel tracing, List<TracingModel> tracingModels) {
         for (TracingModel tracingModel : tracingModels) {
