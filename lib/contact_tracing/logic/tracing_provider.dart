@@ -1,5 +1,6 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:monigate_app/contact_tracing/services/ble_service.dart';
+import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
 
 enum TracingState {
   running,
@@ -25,12 +26,15 @@ class TracingNotifier extends StateNotifier<TracingState> {
     state = TracingState.stopped;
   }
 
-  void toggleService() {
+  Future<void> toggleService() async {
     if (state == TracingState.running) {
+      await BackgroundFetch.stop();
       _stopService();
       return;
     }
 
+    final result = await BackgroundFetch.start();
+    print('background : $result');
     _startService();
   }
 }

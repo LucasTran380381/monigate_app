@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
-import 'package:monigate_app/contact_tracing/services/ble_service.dart';
+import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
 import 'package:monigate_app/controllers/menu_controller.dart';
 
 class MenuPage extends StatelessWidget {
@@ -96,12 +96,27 @@ class MenuListView extends StatelessWidget {
             // ),
             Consumer(
               builder: (context, ref, child) {
-                return TextButton(
-                  onPressed: () async {
-                    final result = await ref.read(tracingServiceProvider).getHistory();
-                    print('sharepref: $result');
-                  },
-                  child: Text('get data'),
+                return Row(
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        ref.read(tracingServiceProvider).syncData();
+                      },
+                      child: Text('sync now'),
+                    ),
+                    // TextButton(
+                    //   onPressed: () async {
+                    //     final pref = await SharedPreferences.getInstance();
+                    //     await pref.reload();
+                    //     final json = pref.getString('tracing_test');
+                    //     if (json != null) {
+                    //       final List decode = jsonDecode(json);
+                    //       final tracings = decode.map((element) => Tracing.fromJson(element)).toList();
+                    //     }
+                    //   },
+                    //   child: Text('get sync data'),
+                    // )
+                  ],
                 );
               },
             ),

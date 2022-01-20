@@ -8,7 +8,7 @@ import 'package:monigate_app/common/widgets/root_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
-  final loginService = Get.put(AuthService());
+  final authService = Get.put(AuthService());
   final formKey = GlobalKey<FormState>();
   final errorText = RxnString(null);
   String? username;
@@ -20,7 +20,7 @@ class LoginController extends GetxController {
       formKey.currentState?.save();
       if (username != null && password != null) {
         try {
-          final user = await loginService.login(username!, password!);
+          final user = await authService.login(username!, password!);
           final prefs = await SharedPreferences.getInstance();
           prefs.setString('user', jsonEncode(user.toJson()));
           Get.off(() => const RootPage());

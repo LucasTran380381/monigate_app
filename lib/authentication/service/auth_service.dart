@@ -25,6 +25,7 @@ class AuthService {
     final user = User.fromJson(map['user']);
     final token = Token.fromJson(map['accessToken']);
     pref.setString('token', token.token);
+    pref.setString('userId', user.id);
     await box.write('currentUser', map['user']);
     // await box.write('token', map['token']);
     return user;

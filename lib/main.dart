@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:background_fetch/background_fetch.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,8 @@ import 'package:monigate_app/common/widgets/splash_page.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/i18n/app_translation.dart';
 
+import 'contact_tracing/services/tracing_service.dart';
+
 Future<void> main() async {
   await GetStorage.init();
   await dotenv.load(fileName: ".env");
@@ -25,6 +28,23 @@ Future<void> main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const ProviderScope(child: MyApp()));
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+}
+
+void backgroundFetchHeadlessTask(HeadlessTask task) async {
+  String taskId = task.taskId;
+  bool isTimeout = task.timeout;
+  if (isTimeout) {
+    // This task has exceeded its allowed running-time.
+    // You must stop what you're doing and immediately .finish(taskId)
+    print("[BackgroundFetch] Headless task timed-out: $taskId");
+    BackgroundFetch.finish(taskId);
+    return;
+  }
+  print('[BackgroundFetch] Headless event received.');
+  // Do your work here...
+  ProviderContainer().read(tracingServiceProvider).syncData();
+  BackgroundFetch.finish(taskId);
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {

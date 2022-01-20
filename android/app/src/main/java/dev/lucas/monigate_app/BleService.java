@@ -19,20 +19,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.ParcelUuid;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+
+import dev.lucas.monigate_app.models.Contact;
+import dev.lucas.monigate_app.models.ContactTracing;
 
 
-public class BleService extends Service{
+public class BleService extends Service {
 
     public static final int STATUS_SCAN_FINISH = 0;
     public static final int STATUS_SCAN_SETUP = 1;
@@ -59,6 +64,11 @@ public class BleService extends Service{
     private long mLastTimeScanCallBack;
 
     private static final String TAG = "BLEService";
+    private final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+    private final SharedPreferences flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+    private List<ContactTracing> contactTracings;
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -80,6 +90,15 @@ public class BleService extends Service{
 
         //TODO: Write Timer for Request permission here
 
+        _loadContactTracings();
+    }
+
+    private void _loadContactTracings() {
+        contactTracings = new ArrayList<>();
+        String json = flutterPref.getString("contact_tracing", "not found");
+        if (!json.equals("not found")) {
+            contactTracings.addAll(Arrays.asList(gson.fromJson(json, ContactTracing[].class)));
+        }
     }
 
     /**
@@ -107,7 +126,7 @@ public class BleService extends Service{
 //        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
-                .setContentTitle("Notification service")
+                .setContentTitle("Truy vết tiếp xúc đang hoạt động")
                 .setContentText(dataIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
 //                .setContentIntent(pendingIntent)
@@ -129,7 +148,7 @@ public class BleService extends Service{
 
     }
 
-    private void startAll(){
+    private void startAll() {
         startBroadCastBLE();
         startScanBle();
     }
@@ -137,7 +156,7 @@ public class BleService extends Service{
     /**
      * Phat song BLE
      */
-    public void startBroadCastBLE(){
+    public void startBroadCastBLE() {
         try {
             // Check
             if (mBluetoothLeAdvertiser != null && mStatusAdvertising == STATUS_SCAN_FINISH) {
@@ -161,8 +180,11 @@ public class BleService extends Service{
                 builder.setIncludeTxPowerLevel(false);
 
                 // Add Manufacturer
-                String bluezoneId = "KLMNEF"; //TODO: This should be discussed. How to generate a proper, unique manufacturer data
-                builder.addManufacturerData(AppConstants.BLE_ID, bluezoneId.getBytes());
+                final SharedPreferences flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+                final String userId = flutterPref.getString("flutter.userId", "unknown");
+                Log.d(TAG, "startBroadCastBLE: userId" + userId);
+//                String userId = "KLMNEF"; //TODO: This should be discussed. How to generate a proper, unique manufacturer data
+                builder.addManufacturerData(AppConstants.BLE_ID, userId.getBytes());
                 builder.addServiceUuid(AppUtils.BLE_UUID_ANDROID);
 
                 Log.e(TAG, "UUID " + AppUtils.BLE_UUID_ANDROID.toString());
@@ -174,7 +196,7 @@ public class BleService extends Service{
                         // Set bien
                         mStatusAdvertising = STATUS_SCANNING;
                         // Log
-                        Log.e(TAG,"Start: BluetoothLeAdvertiser : start : success");
+                        Log.e(TAG, "Start: BluetoothLeAdvertiser : start : success");
                     }
 
                     @Override
@@ -183,7 +205,7 @@ public class BleService extends Service{
                         // Set bien
                         mStatusAdvertising = STATUS_SCAN_FINISH;
                         // Log
-                        Log.e(TAG,"Start: BluetoothLeAdvertiser : start : fail : Code: " + errorCode);
+                        Log.e(TAG, "Start: BluetoothLeAdvertiser : start : fail : Code: " + errorCode);
                     }
                 };
 
@@ -223,7 +245,7 @@ public class BleService extends Service{
                 mLastTimeScanCallBack = System.currentTimeMillis();
 
                 // Log
-                Log.e(TAG,"startScanBle setup");
+                Log.e(TAG, "startScanBle setup");
 
                 // Setting BLE Scan
                 ScanSettings.Builder scanSettings = new ScanSettings.Builder();
@@ -242,7 +264,23 @@ public class BleService extends Service{
                 List<ScanFilter> listFilter = new ArrayList<>();
                 listFilter.add(scanFilterAndroid.build());
 
+                final List<TracingModel> tracingModels = new ArrayList<>();
 
+
+                final String json = flutterPref.getString("flutter.tracing_test", "not found");
+                if (!json.contains("not found")) {
+//                    final List<TracingModel> tracing = new ArrayList(gson.fromJson(json, TracingModel[].class));
+                    final TracingModel[] decode = gson.fromJson(json, TracingModel[].class);
+                    tracingModels.addAll(Arrays.asList(decode));
+//                    tracingModels = new ArrayList<>(Arrays.asList(decode));
+                }
+
+
+//                tracingModels.add(new TracingModel("test userid", new Date(), false));
+//                final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+//                final String json = gson.toJson(tracingModels);
+//                flutterPref.edit().putString("flutter.tracing_test", json).apply();
+//                Log.d(TAG, "startScanBle: json: " + json);
 
                 // Callback khi scan bluetooth
                 mScanCallback = new ScanCallback() {
@@ -252,13 +290,28 @@ public class BleService extends Service{
                         super.onScanResult(callbackType, result);
                         mStatusScanBle = STATUS_SCANNING;
                         byte[] blidContact = result.getScanRecord().getManufacturerSpecificData(AppConstants.BLE_ID);
-                        String deviceName = result.getDevice().getName();
-                        int rssi = result.getRssi();
-                        String address = result.getDevice().getAddress();
-                        List<ParcelUuid> serviceUUIDs = result.getScanRecord().getServiceUuids();
-                        Log.d(TAG, "put to share pref");
-                        final SharedPreferences flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
-                        flutterPref.edit().putString("flutter.scan", UUID.randomUUID().toString()).apply();
+//                        String deviceName = result.getDevice().getName();
+//                        int rssi = result.getRssi();
+//                        String address = result.getDevice().getAddress();
+//                        List<ParcelUuid> serviceUUIDs = result.getScanRecord().getServiceUuids();
+//                        Log.d(TAG, "put to share pref");
+//                        final SharedPreferences flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+//                        flutterPref.edit().putString("flutter.scan", UUID.randomUUID().toString()).apply();
+                        final String userId = new String(blidContact, StandardCharsets.UTF_8);
+                        final Date time = new Date();
+                        Log.d(TAG, "onScanResult: found userId: " + userId + " in time: " + time);
+
+                        _saveContact(userId, time);
+
+
+//                        final TracingModel tracing = new TracingModel(userId, time, false);
+//
+//                        boolean isDuplicate = _checkDuplicateDevice(tracing, tracingModels);
+//                        if (!isDuplicate) {
+//                            tracingModels.add(new TracingModel(new String(blidContact, StandardCharsets.UTF_8), new Date(), false));
+//                        }
+
+
 //                        Log.e(TAG, "Detect on Scan " + deviceName + " " + rssi + "  " + address
 //                                + " Service : " + serviceUUIDs + " Manufacture " + new String(blidContact, StandardCharsets.UTF_8));
                     }
@@ -268,7 +321,7 @@ public class BleService extends Service{
                         Log.e(TAG, "On batch scan Result");
                         super.onBatchScanResults(results);
                         mStatusScanBle = STATUS_SCANNING;
-                        for (ScanResult result : results){
+                        for (ScanResult result : results) {
                             byte[] blidContact = result.getScanRecord().getManufacturerSpecificData(AppConstants.BLE_ID);
                             String deviceName = result.getDevice().getName();
                             int rssi = result.getRssi();
@@ -283,12 +336,12 @@ public class BleService extends Service{
                     public void onScanFailed(int errorCode) {
                         super.onScanFailed(errorCode);
                         mStatusScanBle = STATUS_SCAN_FINISH;
-                        Log.e(TAG,"startScanBle: fail : Code: " + errorCode);
+                        Log.e(TAG, "startScanBle: fail : Code: " + errorCode);
                     }
                 };
 
                 // Start scan
-                Log.e(TAG,"starting to scan");
+                Log.e(TAG, "starting to scan");
                 mBluetoothLeScanner.startScan(listFilter, scanSettings.build(), mScanCallback);
 //                mBluetoothLeScanner.startScan(mScanCallback);
 
@@ -300,13 +353,56 @@ public class BleService extends Service{
         }
     }
 
+    private void _saveContact(String userId, Date time) {
+        _loadContactTracings();
+        ContactTracing foundedContactTracing = _getContactTracing(time);
+        if (foundedContactTracing == null){
+            foundedContactTracing = new ContactTracing(time,new ArrayList<>());
+            contactTracings.add(foundedContactTracing);
+        }
+
+        _addNewContact(foundedContactTracing, userId);
+
+        flutterPref.edit().putString("contact_tracing", gson.toJson(contactTracings)).apply();
+    }
+
+    private void _addNewContact(ContactTracing contactTracing, String userId) {
+        for (Contact contact : contactTracing.getContacts()) {
+            if (contact.getUserId().equals(userId)) {
+                return;
+            }
+        }
+
+        contactTracing.getContacts().add(new Contact(userId,false));
+    }
+
+    private ContactTracing _getContactTracing(Date time) {
+        for (ContactTracing contactTracing : contactTracings) {
+            Date contactDate = contactTracing.getDate();
+            if (time.getDate() == contactDate.getDate() && time.getMonth() == contactDate.getMonth() && time.getYear() == contactDate.getYear())
+                return contactTracing;
+        }
+
+        return null;
+    }
+
+    private boolean _checkDuplicateDevice(TracingModel tracing, List<TracingModel> tracingModels) {
+        for (TracingModel tracingModel : tracingModels) {
+            if (tracingModel.equals(tracing)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Stop scan ble
      */
     private void stopScanBle() {
         try {
             if (mBluetoothLeScanner != null && mScanCallback != null) {
-                Log.e(TAG,"stopping BLE scanning");
+                Log.e(TAG, "stopping BLE scanning");
                 mBluetoothLeScanner.stopScan(mScanCallback);
             }
         } catch (Exception e) {
@@ -350,7 +446,7 @@ public class BleService extends Service{
                 // Check su kien ket thuc
                 if (intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)) {
                     // Log
-                    Log.e(TAG,"Stop Discovery and restart discovery");
+                    Log.e(TAG, "Stop Discovery and restart discovery");
 
                     // Start
                     // bắt đầu quét.
