@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:monigate_app/models/user.dart';
 import 'package:monigate_app/authentication/service/auth_service.dart';
+import 'package:monigate_app/models/user.dart';
 
 class MenuController extends GetxController {
   final box = GetStorage();
@@ -25,7 +25,5 @@ class MenuController extends GetxController {
     box.write('language', useVietnamese ? 'vn' : 'en');
   }
 
-  void logout() {
-    authService.logout();
-  }
+  void logout() {}
 }

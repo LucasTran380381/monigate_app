@@ -3,17 +3,27 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:monigate_app/authentication/models/token.dart';
 import 'package:monigate_app/authentication/view/login_page.dart';
+import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
 import 'package:monigate_app/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final authServiceProvider = Provider((ref) {
+  final service = AuthService();
+  service.ref = ref;
+  return service;
+});
 
 class AuthService {
   final apiUrl = dotenv.env['apiUrl'];
   final dio = Dio();
   final box = GetStorage();
+
+  late final Ref ref;
 
   Future<User> login(String username, String password) async {
     final firebaseToken = await FirebaseMessaging.instance.getToken();
@@ -25,6 +35,7 @@ class AuthService {
     final user = User.fromJson(map['user']);
     final token = Token.fromJson(map['accessToken']);
     pref.setString('token', token.token);
+    pref.setString('userId', user.id);
     await box.write('currentUser', map['user']);
     // await box.write('token', map['token']);
     return user;
@@ -36,6 +47,7 @@ class AuthService {
     box.remove('token');
     pref.remove('user');
     pref.remove('token');
+    ref.read(tracingProvider.notifier).stopService();
     Get.off(() => const LoginPage());
   }
 

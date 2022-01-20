@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:monigate_app/controllers/menu_controller.dart';
 import 'package:monigate_app/common/themes/color.dart';
+import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
+import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
+import 'package:monigate_app/controllers/menu_controller.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -91,9 +94,41 @@ class MenuListView extends StatelessWidget {
             //   title: Text('menu_tracking_contact'.tr),
             //   leading: const Icon(Icons.bluetooth),
             // ),
+            Consumer(
+              builder: (context, ref, child) {
+                return Row(
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        ref.read(tracingServiceProvider).syncData();
+                      },
+                      child: Text('sync now'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        ref.read(tracingServiceProvider).clearTracingData();
+                      },
+                      child: Text('clear sync data'),
+                    )
+                  ],
+                );
+              },
+            ),
             const Divider(
               height: 1,
               indent: 24 + 20 + 20,
+            ),
+            Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(tracingProvider);
+                return SwitchListTile.adaptive(
+                  title: const Text('tracing'),
+                  value: state == TracingState.running,
+                  onChanged: (bool value) {
+                    ref.read(tracingProvider.notifier).toggleService();
+                  },
+                );
+              },
             ),
             Obx(
               () => SwitchListTile.adaptive(
