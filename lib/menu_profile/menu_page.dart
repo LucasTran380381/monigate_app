@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:monigate_app/authentication/service/auth_service.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
 import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
@@ -102,13 +103,13 @@ class MenuListView extends StatelessWidget {
                       onPressed: () async {
                         ref.read(tracingServiceProvider).syncData();
                       },
-                      child: Text('sync now'),
+                      child: const Text('sync now'),
                     ),
                     TextButton(
                       onPressed: () async {
                         ref.read(tracingServiceProvider).clearTracingData();
                       },
-                      child: Text('clear sync data'),
+                      child: const Text('clear sync data'),
                     )
                   ],
                 );
@@ -144,11 +145,15 @@ class MenuListView extends StatelessWidget {
               height: 1,
               indent: 24 + 20 + 20,
             ),
-            ListTile(
-              title: const Text('Đăng xuất'),
-              leading: const Icon(Icons.logout_outlined),
-              onTap: controller.logout,
-            ),
+            Consumer(
+              builder: (context, ref, child) {
+                return ListTile(
+                  title: const Text('Đăng xuất'),
+                  leading: const Icon(Icons.logout_outlined),
+                  onTap: ref.read(authServiceProvider).logout,
+                );
+              },
+            )
           ],
         ),
       ),

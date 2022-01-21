@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/common/providers/user_provider.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
+import 'package:monigate_app/disease_report/view/disease_report_page.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/home/view/widgets/checkin_status_card.dart';
 import 'package:monigate_app/home/view/widgets/masks_status_temperature_card.dart';
@@ -15,6 +16,7 @@ import 'package:monigate_app/home/view/widgets/qr_code.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final currentDate = DateTime.now();
@@ -111,6 +113,20 @@ class HomePage extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: MasksStatusAndTemperatureCard(),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  width: double.maxFinite,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                      return const DiseaseReportPage();
+                    })),
+                    child: const Text('Báo cáo bệnh'),
+                  ),
                 ),
               ],
             ),

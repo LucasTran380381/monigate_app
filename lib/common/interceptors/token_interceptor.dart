@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:monigate_app/authentication/service/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenInterceptor extends Interceptor {
@@ -18,7 +20,15 @@ class TokenInterceptor extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    if (err.response?.statusCode == 401) {}
+    if (err.response?.statusCode == 401) {
+      final errorMessage = err.response?.data as String? ?? '';
+      if (errorMessage.contains('Token')) {
+        final authService = ProviderContainer().read(authServiceProvider);
+        try {
+          authService.refreshToken();
+        } on DioError catch (e) {}
+      }
+    }
     super.onError(err, handler);
   }
 }

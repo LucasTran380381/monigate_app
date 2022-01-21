@@ -25,5 +25,7 @@ class MenuController extends GetxController {
     box.write('language', useVietnamese ? 'vn' : 'en');
   }
 
-  void logout() {}
+  void logout() {
+    authService.logout();
+  }
 }

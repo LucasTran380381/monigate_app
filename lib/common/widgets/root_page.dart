@@ -54,13 +54,13 @@ class _RootPageState extends ConsumerState<RootPage> {
       print("[BackgroundFetch] Event received $taskId");
       // IMPORTANT:  You must signal completion of your task or the OS can punish your app
       // for taking too long in the background.
-      ref.read(tracingServiceProvider).syncData();
+      ProviderContainer().read(tracingServiceProvider).syncData();
       BackgroundFetch.finish(taskId);
     }, (String taskId) async {
       // <-- Task timeout handler.
       // This task has exceeded its allowed running-time.  You must stop what you're doing and immediately .finish(taskId)
       print("[BackgroundFetch] TASK TIMEOUT taskId: $taskId");
-      ref.read(tracingServiceProvider).syncData();
+      ProviderContainer().read(tracingServiceProvider).syncData();
       BackgroundFetch.finish(taskId);
     });
     print('[BackgroundFetch] configure success: $status');

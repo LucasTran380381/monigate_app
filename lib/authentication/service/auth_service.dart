@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:monigate_app/authentication/models/token.dart';
 import 'package:monigate_app/authentication/view/login_page.dart';
+import 'package:monigate_app/common/service/dio_client.dart';
 import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
 import 'package:monigate_app/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,8 +35,10 @@ class AuthService {
     final map = resp.data as Map<String, dynamic>;
     final user = User.fromJson(map['user']);
     final token = Token.fromJson(map['accessToken']);
+    final refreshToken = Token.fromJson(map['refreshToken']);
     pref.setString('token', token.token);
     pref.setString('userId', user.id);
+    pref.setString('refreshToken', refreshToken.token);
     await box.write('currentUser', map['user']);
     // await box.write('token', map['token']);
     return user;
@@ -53,5 +56,16 @@ class AuthService {
 
   User getCurrentUser() {
     return User.fromJson(box.read('currentUser'));
+  }
+
+  refreshToken() async {
+    final pref = await SharedPreferences.getInstance();
+    final accessToken = pref.getString('token');
+    final refreshTokenString = pref.getString('accessToken');
+
+    final resp = await DioClient.instance.post(
+      '/Account/refresh',
+    );
+    print(resp.data);
   }
 }
