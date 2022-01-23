@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:monigate_app/authentication/models/token.dart';
 import 'package:monigate_app/authentication/view/login_page.dart';
+import 'package:monigate_app/common/providers/user_provider.dart';
 import 'package:monigate_app/common/service/dio_client.dart';
 import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
 import 'package:monigate_app/models/user.dart';
@@ -28,6 +29,7 @@ class AuthService {
 
   Future<User> login(String username, String password) async {
     final firebaseToken = await FirebaseMessaging.instance.getToken();
+    print('firebase token: $firebaseToken');
     final body = jsonEncode({'username': username, 'password': password, 'fireBaseToken': firebaseToken});
 
     final resp = await dio.post('$apiUrl/Account/login', data: body);
@@ -39,6 +41,8 @@ class AuthService {
     pref.setString('token', token.token);
     pref.setString('userId', user.id);
     pref.setString('refreshToken', refreshToken.token);
+    await pref.setString('user', jsonEncode(user.toJson()));
+    ref.read(userProvider.notifier).getUser();
     await box.write('currentUser', map['user']);
     // await box.write('token', map['token']);
     return user;
@@ -54,18 +58,25 @@ class AuthService {
     Get.off(() => const LoginPage());
   }
 
-  User getCurrentUser() {
-    return User.fromJson(box.read('currentUser'));
+  Future<User> getCurrentUser() async {
+    final pref = await SharedPreferences.getInstance();
+    final json = pref.getString('user')!;
+    return User.fromJson(jsonDecode(json));
   }
 
   refreshToken() async {
     final pref = await SharedPreferences.getInstance();
     final accessToken = pref.getString('token');
-    final refreshTokenString = pref.getString('accessToken');
+    final refreshToken = pref.getString('accessToken');
+    final body = jsonEncode({
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
+    });
 
     final resp = await DioClient.instance.post(
       '/Account/refresh',
+      data: body,
     );
-    print(resp.data);
+    print('refresh token $resp');
   }
 }

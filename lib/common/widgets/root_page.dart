@@ -9,7 +9,6 @@ import 'package:monigate_app/checkin_history/view/history_checkin_page.dart';
 import 'package:monigate_app/common/providers/bottom_navigation_index_provider.dart';
 import 'package:monigate_app/common/service/notification_service.dart';
 import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
-import 'package:monigate_app/home/logic/checkin_provider.dart';
 
 import '../../home/view/home_page.dart';
 import '../../menu_profile/menu_page.dart';
@@ -25,16 +24,19 @@ class RootPage extends ConsumerStatefulWidget {
 
 class _RootPageState extends ConsumerState<RootPage> {
   @override
-  void initState() {
-    FirebaseMessaging.onMessage.listen((message) {
-      final String? checkinStatus = message.data['checkinStatusCode'];
-      if (checkinStatus != null) {
-        ref.read(notificationServiceProvider).showNotification('Checkin', 'Đã cập nhật checkin', 'payload');
-        ref.read(checkinProvider.notifier).fetchCheckin();
-      }
-    });
+  initState() {
+    _initFCM();
+
     initPlatformState();
     super.initState();
+  }
+
+  _initFCM() async {
+    await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging.onMessage.listen((message) {
+      print('notification');
+      ProviderContainer().read(notificationServiceProvider).handleNotification(message);
+    });
   }
 
   Future<void> initPlatformState() async {

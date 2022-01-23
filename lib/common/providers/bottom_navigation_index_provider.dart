@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final bottomNavigationIndexProvider = StateNotifierProvider<BottomIndexNotifier, int>((ref) {
+final bottomNavigationIndexProvider = StateNotifierProvider.autoDispose<BottomIndexNotifier, int>((ref) {
   return BottomIndexNotifier();
 });
 

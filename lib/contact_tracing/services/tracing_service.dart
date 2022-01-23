@@ -101,4 +101,21 @@ class TracingService {
 
     pref.setString('close_contacts', jsonEncode(localData));
   }
+
+  noticeCloseContact(String userId, int dateRange) async {
+    final day = DateTime.now().day;
+    final month = DateTime.now().month;
+    final year = DateTime.now().year;
+    final date = DateTime(year, month, day).subtract(Duration(days: dateRange));
+    final pref = await SharedPreferences.getInstance();
+    await pref.reload();
+    final json = pref.getString('close_contacts');
+    if (json != null) {
+      final List decode = jsonDecode(json);
+      final noticeDate = decode
+          .map((element) => CloseContact.fromJson(element))
+          .where((closeContact) => closeContact.userId == userId && closeContact.date.isAfter(date))
+          .map((closeContact) => closeContact.date);
+    }
+  }
 }

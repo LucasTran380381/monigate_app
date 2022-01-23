@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
         title: Consumer(
           builder: (context, ref, child) {
             final state = ref.watch(userProvider);
-            final firstname = state.maybeWhen(data: (value) => value?.firstName ?? '...', orElse: () => '...');
+            final firstname = state.maybeWhen(data: (value) => value.firstName, orElse: () => '...');
 
             return Text('Chào, $firstname', style: Theme.of(context).textTheme.headline5!.merge(const TextStyle(color: Colors.white)));
           },
@@ -36,7 +36,10 @@ class HomePage extends StatelessWidget {
       body: Consumer(
         builder: (BuildContext context, WidgetRef ref, Widget? child) {
           return RefreshIndicator(
-            onRefresh: () => ref.read(checkinProvider.notifier).fetchCheckin(),
+            onRefresh: () async {
+              ref.refresh(userProvider);
+              await ref.read(checkinProvider.notifier).fetchCheckin();
+            },
             child: child!,
           );
         },
@@ -84,7 +87,7 @@ class HomePage extends StatelessWidget {
                     final state = ref.watch(userProvider);
                     return state.maybeWhen(
                         data: (user) {
-                          final firstName = user!.firstName;
+                          final firstName = user.firstName;
                           final lastName = user.lastName;
                           return Text(
                             '$lastName $firstName',

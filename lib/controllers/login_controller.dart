@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/authentication/service/auth_service.dart';
 import 'package:monigate_app/common/widgets/root_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
   final authService = Get.put(AuthService());
@@ -14,15 +12,15 @@ class LoginController extends GetxController {
   String? username;
   String? password;
 
-  login() async {
+  login(WidgetRef ref) async {
     errorText.value = null;
     if (formKey.currentState!.validate()) {
       formKey.currentState?.save();
       if (username != null && password != null) {
         try {
-          final user = await authService.login(username!, password!);
-          final prefs = await SharedPreferences.getInstance();
-          prefs.setString('user', jsonEncode(user.toJson()));
+          ref.read(authServiceProvider).login(username ?? '', password ?? '');
+          // authService.login(username ?? '', password ?? '');
+          // ProviderContainer().refresh(userProvider);
           Get.off(() => const RootPage());
         } on DioError catch (e) {
           if (e.response?.statusCode == 404) {

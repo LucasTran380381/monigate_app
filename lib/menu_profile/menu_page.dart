@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/authentication/service/auth_service.dart';
+import 'package:monigate_app/common/providers/user_provider.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
 import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
@@ -34,13 +35,27 @@ class MenuPage extends StatelessWidget {
                 ),
               ),
             ),
-            Obx(() {
-              final user = controller.user.value;
-              return Text(
-                '${user.lastName} ${user.firstName}',
-                style: Theme.of(context).textTheme.headline4!.merge(const TextStyle(color: Colors.black)),
-              );
-            }),
+            Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(userProvider);
+                final value = state.maybeWhen(
+                    data: (user) => '${user.fullName}',
+                    orElse: () {
+                      return '...';
+                    });
+                return Text(
+                  value,
+                  style: Theme.of(context).textTheme.headline4!.merge(const TextStyle(color: Colors.black)),
+                );
+              },
+            ),
+            // Obx(() {
+            //   final user = controller.user.value;
+            //   return Text(
+            //     '${user.lastName} ${user.firstName}',
+            //     style: Theme.of(context).textTheme.headline4!.merge(const TextStyle(color: Colors.black)),
+            //   );
+            // }),
             const MenuListView()
           ],
         ),

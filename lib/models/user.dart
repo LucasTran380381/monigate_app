@@ -10,6 +10,8 @@ class User {
 
   User(this.id, this.firstName, this.lastName, this.avatarUrl, this.phone, this.email, this.status);
 
+  String get fullName => '$lastName $firstName';
+
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization

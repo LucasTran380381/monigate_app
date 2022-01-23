@@ -1,16 +1,26 @@
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:monigate_app/authentication/service/auth_service.dart';
 import 'package:monigate_app/models/user.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-final userProvider = FutureProvider<User?>((ref) async {
-  final prefs = await SharedPreferences.getInstance();
-  final userString = prefs.getString('user');
+final userProvider = StateNotifierProvider<UserNotifier, AsyncValue<User>>((ref) {
+  return UserNotifier(ref);
+});
 
-  if (userString == null) {
-    return null;
+class UserNotifier extends StateNotifier<AsyncValue<User>> {
+  UserNotifier(this._ref) : super(const AsyncValue.loading()) {
+    getUser();
   }
 
-  return User.fromJson(jsonDecode(userString));
-});
+  final Ref _ref;
+
+  getUser() async {
+    state = const AsyncValue.loading();
+    try {
+      final user = await _ref.read(authServiceProvider).getCurrentUser();
+      state = AsyncValue.data(user);
+    } on DioError catch (e) {
+      state = AsyncValue.error(e);
+    }
+  }
+}

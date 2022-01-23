@@ -1,5 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
+import 'package:monigate_app/home/logic/checkin_provider.dart';
 
 final notificationPluginProvider = Provider<FlutterLocalNotificationsPlugin>((ref) {
   return FlutterLocalNotificationsPlugin();
@@ -33,5 +36,19 @@ class NotificationService {
 
   _handleSelectNotification(String? payload) {
     print('$payload');
+  }
+
+  handleNotification(RemoteMessage message) {
+    print('message: ${message.data}');
+    final String? checkinStatus = message.data['checkinStatusCode'];
+    if (checkinStatus != null) {
+      showNotification('Checkin', 'Đã cập nhật checkin', 'payload');
+      _ref.read(checkinProvider.notifier).fetchCheckin();
+    } else if (message.data['SourceUserId'] != null) {
+      final userId = message.data['SourceUserId'] as String;
+      final dateRange = int.parse(message.data['DayRange']);
+      showNotification('Chú ý tiếp xúc', 'Chú ý tiếp xúc với nhân viên $userId trong vòng $dateRange ngày gần đây', '');
+      _ref.read(tracingServiceProvider).noticeCloseContact(userId, dateRange);
+    }
   }
 }

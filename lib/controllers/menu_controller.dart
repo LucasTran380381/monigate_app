@@ -12,7 +12,7 @@ class MenuController extends GetxController {
 
   @override
   void onInit() {
-    user = authService.getCurrentUser().obs;
+    // user = authService.getCurrentUser().obs;
     final String language = box.read('language');
     isUseVietnamese(language == 'vn');
     super.onInit();
