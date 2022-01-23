@@ -18,7 +18,7 @@ class LoginController extends GetxController {
       formKey.currentState?.save();
       if (username != null && password != null) {
         try {
-          ref.read(authServiceProvider).login(username ?? '', password ?? '');
+          await ref.read(authServiceProvider).login(username ?? '', password ?? '');
           // authService.login(username ?? '', password ?? '');
           // ProviderContainer().refresh(userProvider);
           Get.off(() => const RootPage());
