@@ -55,6 +55,7 @@ dependencies:
   functional_widget_annotation: ^0.9.2
   background_fetch: ^1.0.3
   image_picker: ^0.8.4+4
+  sqflite: ^2.0.2
 
 
 
