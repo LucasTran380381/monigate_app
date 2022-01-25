@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/common/service/dio_client.dart';
 import 'package:monigate_app/contact_tracing/models/close_contact.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 final tracingServiceProvider = Provider((ref) {
   return TracingService();
@@ -27,22 +28,40 @@ class TracingService {
     return pref.getString('scan');
   }
 
+  Future<Database> _openDb() async {
+    final path = await getDatabasesPath() + '/monigate';
+    return await openDatabase(path);
+  }
+
   syncData() async {
-    final pref = await SharedPreferences.getInstance();
-    await pref.reload();
-    final json = pref.getString('close_contacts');
-    if (json != null) {
-      final List decode = jsonDecode(json);
-
-      final needSyncedCloseContacts = decode.map((element) => CloseContact.fromJson(element)).where((element) => !element.isSynced);
-
+    late final Database? db;
+    try {
+      final path = await getDatabasesPath() + '/monigate';
+      db = await openDatabase(path);
+      // await db.delete('closeContacts', where: 'isSynced = ?', whereArgs: [0]);
+      final result = await db.query('closeContacts', where: 'isSynced = ?', whereArgs: [0]);
+      print('needSyncedCloseContacts: $result');
+      final needSyncedCloseContacts = result.map((element) => CloseContact.fromMap(element));
       _saveToDb(needSyncedCloseContacts);
+      db.close();
+    } catch (e) {
+      db?.close();
     }
+
+    // final pref = await SharedPreferences.getInstance();
+    // await pref.reload();
+    // final json = pref.getString('close_contacts');
+    // if (json != null) {
+    //   final List decode = jsonDecode(json);
+    //
+    //   final needSyncedCloseContacts = decode.map((element) => CloseContact.fromJson(element)).where((element) => !element.isSynced);
+    //
+    // }
   }
 
   clearTracingData() async {
-    final pref = await SharedPreferences.getInstance();
-    pref.remove('close_contacts');
+    final db = await _openDb();
+    db.delete('closeContacts');
   }
 
   void _saveToDb(Iterable<CloseContact> closeContacts) {
@@ -73,7 +92,7 @@ class TracingService {
     }
 
     final filteredContact = dates.map((date) {
-      final userIds = closeContacts.where((contact) => contact.date.compareTo(date) == 0).map((contact) => contact.userId);
+      final userIds = closeContacts.where((contact) => contact.date.compareTo(date) == 0).map((contact) => contact.contactWithUserId);
       return CloseContactForManipulation(date, userIds.toList());
     });
 
@@ -82,24 +101,31 @@ class TracingService {
   }
 
   Future<void> _updateCloseContact(Iterable<CloseContact> closeContacts) async {
-    final pref = await SharedPreferences.getInstance();
-    await pref.reload();
-    final json = pref.getString('close_contacts');
-    if (json == null) {
-      return;
-    }
-
-    final List decodedList = jsonDecode(json);
-
-    final localData = decodedList.map((element) => CloseContact.fromJson(element)).toList();
-
+    final db = await _openDb();
+    final batch = db.batch();
     for (var value in closeContacts) {
-      localData.firstWhereOrNull((element) => element.id == value.id)?.isSynced = true;
+      batch.update('closeContacts', {'isSynced': 1}, where: 'id = ?', whereArgs: [value.id]);
     }
-
-    print('localData : ${jsonEncode(localData)}');
-
-    pref.setString('close_contacts', jsonEncode(localData));
+    await batch.commit(noResult: true);
+    await db.close();
+    // final pref = await SharedPreferences.getInstance();
+    // await pref.reload();
+    // final json = pref.getString('close_contacts');
+    // if (json == null) {
+    //   return;
+    // }
+    //
+    // final List decodedList = jsonDecode(json);
+    //
+    // final localData = decodedList.map((element) => CloseContact.fromJson(element)).toList();
+    //
+    // for (var value in closeContacts) {
+    //   localData.firstWhereOrNull((element) => element.id == value.id)?.isSynced = true;
+    // }
+    //
+    // print('localData : ${jsonEncode(localData)}');
+    //
+    // pref.setString('close_contacts', jsonEncode(localData));
   }
 
   noticeCloseContact(String userId, int dateRange) async {
@@ -114,7 +140,7 @@ class TracingService {
       final List decode = jsonDecode(json);
       final noticeDate = decode
           .map((element) => CloseContact.fromJson(element))
-          .where((closeContact) => closeContact.userId == userId && closeContact.date.isAfter(date))
+          .where((closeContact) => closeContact.contactWithUserId == userId && closeContact.date.isAfter(date))
           .map((closeContact) => closeContact.date);
     }
   }

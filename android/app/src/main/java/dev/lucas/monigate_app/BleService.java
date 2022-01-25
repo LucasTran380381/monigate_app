@@ -33,7 +33,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import dev.lucas.monigate_app.database.DbHelper;
 import dev.lucas.monigate_app.models.CloseContact;
+import dev.lucas.monigate_app.models.CloseContactForDB;
 import dev.lucas.monigate_app.models.Contact;
 import dev.lucas.monigate_app.models.ContactTracing;
 
@@ -67,6 +69,7 @@ public class BleService extends Service {
     private static final String TAG = "BLEService";
     private final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     private SharedPreferences flutterPref;
+    private DbHelper _db;
 
 
     @Nullable
@@ -89,6 +92,7 @@ public class BleService extends Service {
         initStatus();
 
         flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+        _db = new DbHelper(getApplicationContext());
 
         //TODO: Write Timer for Request permission here
 
@@ -286,10 +290,12 @@ public class BleService extends Service {
 //                Log.d(TAG, "startScanBle: json: " + json);
 
                 // Callback khi scan bluetooth
+//todo: fake data save to sqlite
+//                _db.addCloseContact(new CloseContactForDB("FPT000007", "Emp140983", new Date()));
                 mScanCallback = new ScanCallback() {
                     @Override
                     public void onScanResult(int callbackType, ScanResult result) {
-                        Log.e(TAG, "On scan Result");
+                        Log.d(TAG, "On scan Result");
                         super.onScanResult(callbackType, result);
                         mStatusScanBle = STATUS_SCANNING;
                         byte[] blidContact = result.getScanRecord().getManufacturerSpecificData(AppConstants.BLE_ID);
@@ -357,17 +363,22 @@ public class BleService extends Service {
         }
     }
 
-    private void _saveContact(String userId, Date time) {
+    private void _saveContact(String contactWithUserId, Date time) {
+        final String userId = flutterPref.getString("flutter.userId", "unknown");
+        if (!userId.equals("unknown")) {
+            _db.addCloseContact(new CloseContactForDB(contactWithUserId, userId, time));
+        }
+
         List<CloseContact> contacts = _loadContactTracings();
 
         for (CloseContact contact : contacts) {
 //            if exist in contact not save
-            if (contact.equals(new CloseContact(userId, time))) {
+            if (contact.equals(new CloseContact(contactWithUserId, time))) {
                 return;
             }
         }
 
-        contacts.add(new CloseContact(userId, time));
+        contacts.add(new CloseContact(contactWithUserId, time));
 
 //        Log.d(TAG, "_saveContact: " + gson.toJson(contacts));
 //        ContactTracing foundedContactTracing = _getContactTracing(time);
@@ -376,7 +387,7 @@ public class BleService extends Service {
 //            contactTracings.add(foundedContactTracing);
 //        }
 //
-//        _addNewContact(foundedContactTracing, userId);
+//        _addNewContact(foundedContactTracing, contactWithUserId);
 
 
         flutterPref.edit().putString("flutter.close_contacts", gson.toJson(contacts)).apply();
