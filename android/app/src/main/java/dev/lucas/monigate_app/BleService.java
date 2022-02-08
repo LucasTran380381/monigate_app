@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -291,7 +292,7 @@ public class BleService extends Service {
 
                 // Callback khi scan bluetooth
 //todo: fake data save to sqlite
-//                _db.addCloseContact(new CloseContactForDB("FPT000007", "Emp140983", new Date()));
+//                _db.addCloseContact(new CloseContactForDB("FPT000007", "Emp140983", new SimpleDateFormat("yyyy-MM-dd").parse("2022-01-23")));
                 mScanCallback = new ScanCallback() {
                     @Override
                     public void onScanResult(int callbackType, ScanResult result) {

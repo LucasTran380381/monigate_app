@@ -1,8 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
+import 'package:monigate_app/database/db_helpers.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
+import 'package:monigate_app/notification/models/notification.dart';
 
 final notificationPluginProvider = Provider<FlutterLocalNotificationsPlugin>((ref) {
   return FlutterLocalNotificationsPlugin();
@@ -48,7 +49,23 @@ class NotificationService {
       final userId = message.data['SourceUserId'] as String;
       final dateRange = int.parse(message.data['DayRange']);
       showNotification('Chú ý tiếp xúc', 'Chú ý tiếp xúc với nhân viên $userId trong vòng $dateRange ngày gần đây', '');
-      _ref.read(tracingServiceProvider).noticeCloseContact(userId, dateRange);
+      _saveNotification(userId, dateRange);
     }
+  }
+
+  _saveNotification(String userId, int dateRange) async {
+    print('save notificaion');
+    final db = await _ref.read(dbHelperProvider).openDb();
+    final needToSaveNotification = Notification.fromNotification(userId, dateRange);
+
+    final result = await db.insert('notifications', needToSaveNotification.toMap());
+    print('save notification: $result');
+    await db.close();
+  }
+
+  Future<List<Notification>> getNotification() async {
+    final db = await _ref.read(dbHelperProvider).openDb();
+    final result = await db.query('notifications');
+    return result.map((element) => Notification.fromMap(element)).toList();
   }
 }

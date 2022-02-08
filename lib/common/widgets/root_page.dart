@@ -7,8 +7,8 @@ import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/checkin_history/view/history_checkin_page.dart';
 import 'package:monigate_app/common/providers/bottom_navigation_index_provider.dart';
-import 'package:monigate_app/common/service/notification_service.dart';
 import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
+import 'package:monigate_app/notification/services/notification_service.dart';
 
 import '../../home/view/home_page.dart';
 import '../../menu_profile/menu_page.dart';

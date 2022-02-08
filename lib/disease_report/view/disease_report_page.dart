@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:monigate_app/common/service/notification_service.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
 import 'package:monigate_app/disease_report/logic/image_provider.dart';
 import 'package:monigate_app/disease_report/services/disease_report_service.dart';
+import 'package:monigate_app/notification/services/notification_service.dart';
 
 class DiseaseReportPage extends StatefulWidget {
   const DiseaseReportPage({Key? key}) : super(key: key);

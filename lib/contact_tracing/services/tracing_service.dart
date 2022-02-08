@@ -6,14 +6,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/common/service/dio_client.dart';
 import 'package:monigate_app/contact_tracing/models/close_contact.dart';
+import 'package:monigate_app/database/db_helpers.dart';
+import 'package:monigate_app/notification/models/notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 final tracingServiceProvider = Provider((ref) {
-  return TracingService();
+  return TracingService(ref);
 });
 
 class TracingService {
+  final Ref _ref;
+
+  TracingService(this._ref);
+
   startBle() async {
     final result = await const MethodChannel('dev.lucas.tracing').invokeMethod('startTracingService');
   }
@@ -143,5 +149,23 @@ class TracingService {
           .where((closeContact) => closeContact.contactWithUserId == userId && closeContact.date.isAfter(date))
           .map((closeContact) => closeContact.date);
     }
+  }
+
+  Future<List<DateTime>?> findCloseContactDate(Notification notification) async {
+    List<String> whereArgs = [notification.sourceUserId];
+    for (int i = 0; i < notification.dateRange; i++) {
+      final dateString = notification.dateReceived.subtract(Duration(days: i)).toIso8601String();
+      whereArgs.add(dateString.substring(0, dateString.length - 4));
+    }
+    final db = await _ref.read(dbHelperProvider).openDb();
+    final whereCondition = 'contactWithUserId = ? and date IN (${('?' * (whereArgs.length - 1)).split('').join(', ')})';
+    final result = await db.query('closeContacts', where: whereCondition, whereArgs: whereArgs);
+    final dates = result.map((element) {
+      final dateString = element['date'] as String;
+      return DateTime.parse(dateString);
+    }).toList();
+
+    print('date: $dates');
+    return dates;
   }
 }

@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monigate_app/common/providers/bottom_navigation_index_provider.dart';
-import 'package:monigate_app/common/service/notification_service.dart';
 import 'package:monigate_app/common/themes/bottom_navigation_theme.dart';
 import 'package:monigate_app/common/themes/button_theme.dart';
 import 'package:monigate_app/common/themes/color.dart';
@@ -18,6 +17,7 @@ import 'package:monigate_app/common/themes/input_theme.dart';
 import 'package:monigate_app/common/widgets/splash_page.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/i18n/app_translation.dart';
+import 'package:monigate_app/notification/services/notification_service.dart';
 
 import 'contact_tracing/services/tracing_service.dart';
 

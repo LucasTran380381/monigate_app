@@ -22,15 +22,18 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "onCreate: database");
-        String sqlCommand = "Create table closeContacts(id text primary key, userId text, contactWithUserId text, date text, isSynced integer)";
-        db.execSQL(sqlCommand);
+        String createCloseContactsTable = "Create table closeContacts(id text primary key, userId text, contactWithUserId text, date text, isSynced integer)";
+        String createNotificationTable = "Create table notifications(id text primary key, sourceUserId text, dateRange integer, dateReceived text)";
+
+        db.execSQL(createCloseContactsTable);
+        db.execSQL(createNotificationTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        Log.d(TAG, "onUpgrade: database");
-        String dropSqlCommand = "create table notifications(id text primary key, dateRange integer, sourceUserId text)";
-        db.execSQL(dropSqlCommand);
+////        Log.d(TAG, "onUpgrade: database");
+//        String dropSqlCommand = "drop table notificaion";
+//        db.execSQL(dropSqlCommand);
     }
 
     public void addCloseContact(CloseContactForDB closeContact) {

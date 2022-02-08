@@ -13,6 +13,7 @@ import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/home/view/widgets/checkin_status_card.dart';
 import 'package:monigate_app/home/view/widgets/masks_status_temperature_card.dart';
 import 'package:monigate_app/home/view/widgets/qr_code.dart';
+import 'package:monigate_app/notification/view/notifications_list_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -31,7 +32,15 @@ class HomePage extends StatelessWidget {
             return Text('Chào, $firstname', style: Theme.of(context).textTheme.headline5!.merge(const TextStyle(color: Colors.white)));
           },
         ),
-        actions: [IconButton(icon: const Icon(Icons.notifications), onPressed: () {})],
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.notifications),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                  return const NotificationListPage();
+                }));
+              })
+        ],
       ),
       body: Consumer(
         builder: (BuildContext context, WidgetRef ref, Widget? child) {
