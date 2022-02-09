@@ -92,7 +92,7 @@ class NotificationCard extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(notification.dateReceived.shortFormat),
+                Text(notification.dateReceived.shortFormatDate),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(notification.message),
