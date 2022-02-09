@@ -57,10 +57,8 @@ class NotificationService {
     print('save notificaion');
     final db = await _ref.read(dbHelperProvider).openDb();
     final needToSaveNotification = Notification.fromNotification(userId, dateRange);
-
     final result = await db.insert('notifications', needToSaveNotification.toMap());
     print('save notification: $result');
-    await db.close();
   }
 
   Future<List<Notification>> getNotification() async {

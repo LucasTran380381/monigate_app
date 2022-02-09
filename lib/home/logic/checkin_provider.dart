@@ -16,6 +16,7 @@ class CheckinNotifier extends StateNotifier<CheckinState> {
     state = const CheckinState.loading();
     try {
       final result = await _checkinService.getMyCheckin();
+      print('check-in result: $result');
       state = result != null ? CheckinState.hasCheckin(result) : const CheckinState.noCheckin();
     } catch (e) {
       state = CheckinState.error(e.toString());

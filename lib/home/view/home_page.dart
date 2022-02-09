@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/common/providers/user_provider.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
+import 'package:monigate_app/disease_report/view/disease_report_history_page.dart';
 import 'package:monigate_app/disease_report/view/disease_report_page.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/home/view/widgets/checkin_status_card.dart';
@@ -133,11 +134,25 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
                   width: double.maxFinite,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                      return const DiseaseReportPage();
-                    })),
-                    child: const Text('Báo cáo bệnh'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                          return const DiseaseReportHistoryPage();
+                        })),
+                        child: const Text('Lịch sử bệnh án'),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                          return const DiseaseReportPage();
+                        })),
+                        child: const Text('Báo cáo bệnh'),
+                      ),
+                    ],
                   ),
                 ),
               ],

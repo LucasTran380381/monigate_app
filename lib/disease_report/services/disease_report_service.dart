@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/common/service/dio_client.dart';
+import 'package:monigate_app/disease_report/models/disease_report.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final diseaseReportServiceProvider = Provider((ref) {
   return DiseaseReportService();
@@ -37,5 +39,14 @@ class DiseaseReportService {
 
   _generateFileName(File file) {
     return file.path.split('/').last;
+  }
+
+  Future<List<DiseaseReport>> getDiseaseReportHistory() async {
+    final pref = await SharedPreferences.getInstance();
+    final userId = pref.getString('userId');
+    final resp = await DioClient.instance.get('/DiseaseReport/user/$userId');
+    final rawData = resp.data as List;
+    print(rawData);
+    return rawData.map((e) => DiseaseReport.fromJson(e)).toList();
   }
 }

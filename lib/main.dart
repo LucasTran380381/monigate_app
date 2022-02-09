@@ -9,13 +9,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:monigate_app/common/providers/bottom_navigation_index_provider.dart';
 import 'package:monigate_app/common/themes/bottom_navigation_theme.dart';
 import 'package:monigate_app/common/themes/button_theme.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/themes/input_theme.dart';
 import 'package:monigate_app/common/widgets/splash_page.dart';
-import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/i18n/app_translation.dart';
 import 'package:monigate_app/notification/services/notification_service.dart';
 
@@ -51,14 +49,15 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-  print('background notification: ${message.data}');
-  final statusCode = message.data['checkinStatusCode'];
-  final container = ProviderContainer();
-  if (statusCode != null) {
-    container.read(bottomNavigationIndexProvider.notifier).selectIndex(0);
-    container.read(checkinProvider.notifier).fetchCheckin();
-    container.read(notificationServiceProvider).showNotification('Trạng thái Checkin', 'Đã cập nhật checkin', '/home');
-  }
+  ProviderContainer().read(notificationServiceProvider).handleNotification(message);
+  // print('background notification: ${message.data}');
+  // final statusCode = message.data['checkinStatusCode'];
+  // final container = ProviderContainer();
+  // if (statusCode != null) {
+  //   container.read(bottomNavigationIndexProvider.notifier).selectIndex(0);
+  //   container.read(checkinProvider.notifier).fetchCheckin();
+  //   container.read(notificationServiceProvider).showNotification('Trạng thái Checkin', 'Đã cập nhật checkin', '/home');
+  // }
 }
 
 class MyApp extends StatelessWidget {
