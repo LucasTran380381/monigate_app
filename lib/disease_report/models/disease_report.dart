@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'disease_report.g.dart';
@@ -41,6 +42,28 @@ class DiseaseReport {
         return 'Chưa được chấp nhận';
     }
     return 'status title';
+  }
+
+  Icon get statusIcon {
+    var color = Colors.black;
+    var icon = Icons.help_outline_outlined;
+    switch (status) {
+      case 200:
+        color = Colors.green;
+        icon = Icons.check_outlined;
+        break;
+      case 300:
+        color = Colors.green;
+        icon = Icons.notifications_outlined;
+        break;
+      case 100:
+        color = Colors.red;
+        icon = Icons.close_outlined;
+    }
+    return Icon(
+      icon,
+      color: color,
+    );
   }
 }
 

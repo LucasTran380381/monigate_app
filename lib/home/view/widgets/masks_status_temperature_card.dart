@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
-import 'package:monigate_app/home/logic/checkin_provider.dart';
 import 'package:monigate_app/common/themes/color.dart';
+import 'package:monigate_app/home/logic/checkin_provider.dart';
 
 part 'masks_status_temperature_card.g.dart';
 
@@ -50,7 +50,7 @@ class MasksStatusAndTemperatureCard extends ConsumerWidget {
           ),
           // face masks status builder
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Builder(
               builder: (BuildContext context) {
                 late final Color color;
@@ -75,17 +75,22 @@ class MasksStatusAndTemperatureCard extends ConsumerWidget {
                     break;
                 }
 
-                return StatusCard(
-                  icon: Icon(
-                    Icons.masks,
-                    color: color,
+                return Container(
+                  height: 60,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
+                    color: bgColor,
                   ),
-                  title: title,
-                  color: color,
-                  bgColor: bgColor,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
+                  child: Tooltip(
+                    message: title,
+                    child: Icon(
+                      Icons.masks,
+                      color: color,
+                    ),
                   ),
                 );
               },

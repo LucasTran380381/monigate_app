@@ -72,10 +72,10 @@ class DiseaseReportCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.schedule_outlined,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Text(
@@ -95,9 +95,11 @@ class DiseaseReportCard extends StatelessWidget {
                   const SizedBox(
                     width: 20,
                   ),
-                  Text(
-                    report.note,
-                    style: Theme.of(context).textTheme.headline6,
+                  Expanded(
+                    child: Text(
+                      report.note,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
                   )
                 ],
               ),
@@ -113,9 +115,11 @@ class DiseaseReportCard extends StatelessWidget {
                   const SizedBox(
                     width: 20,
                   ),
-                  Text(
-                    report.diseaseCode,
-                    style: Theme.of(context).textTheme.headline6,
+                  Expanded(
+                    child: Text(
+                      report.diseaseCode,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
                   )
                 ],
               ),
@@ -131,10 +135,14 @@ class DiseaseReportCard extends StatelessWidget {
                   const SizedBox(
                     width: 20,
                   ),
-                  Text(
-                    report.statusTitle,
-                    style: Theme.of(context).textTheme.headline6,
-                  )
+                  Tooltip(
+                    message: report.statusTitle,
+                    child: report.statusIcon,
+                  ),
+                  // Text(
+                  //   report.statusTitle,
+                  //   style: Theme.of(context).textTheme.headline6,
+                  // )
                 ],
               ),
             ],
