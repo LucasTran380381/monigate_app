@@ -14,4 +14,6 @@ extension DateTimeExtenion on DateTime {
   String get formattedDay => day < 10 ? '0$day' : day.toString();
 
   String get formattedMonth => month < 10 ? '0$month' : month.toString();
+
+  bool isSameDay(DateTime date) => year == date.year && month == date.month && day == date.day;
 }

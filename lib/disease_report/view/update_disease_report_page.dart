@@ -1,38 +1,31 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
-import 'package:monigate_app/disease_report/logic/disease_report_state_provider.dart';
 import 'package:monigate_app/disease_report/logic/image_provider.dart';
 import 'package:monigate_app/disease_report/models/disease_report.dart';
 import 'package:monigate_app/disease_report/services/disease_report_service.dart';
-import 'package:monigate_app/disease_report/view/update_disease_report_page.dart';
 import 'package:monigate_app/notification/services/notification_service.dart';
 
-class DiseaseReportPage extends ConsumerStatefulWidget {
-  const DiseaseReportPage({Key? key}) : super(key: key);
+class UpdateDiseaseReportPage extends ConsumerWidget {
+  final DiseaseReport report;
+
+  const UpdateDiseaseReportPage(
+    this.report, {
+    Key? key,
+  }) : super(key: key);
 
   @override
-  createState() => _DiseaseReportPageState();
-}
-
-class _DiseaseReportPageState extends ConsumerState<DiseaseReportPage> {
-  String diseaseId = '';
-  String note = '';
-
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    final state = ref.watch(diseaseReportStateProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Báo cáo sức khoẻ'),
         centerTitle: false,
+        title: const Text(
+          'Cập nhật báo cáo',
+        ),
       ),
-      body: state.when(empty: () {
-        return Column(
+      body: SingleChildScrollView(
+        child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -46,7 +39,7 @@ class _DiseaseReportPageState extends ConsumerState<DiseaseReportPage> {
                     width: 30,
                   ),
                   Text(
-                    DateTime.now().shortFormatDate,
+                    report.reportDate.shortFormatDate,
                     style: Theme.of(context).textTheme.headline6,
                   )
                 ],
@@ -56,24 +49,26 @@ class _DiseaseReportPageState extends ConsumerState<DiseaseReportPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    TextField(
-                      onChanged: (value) => diseaseId = value,
+                    TextFormField(
+                      onChanged: (value) => report.diseaseCode = value,
                       decoration: const InputDecoration(
                         label: Text('Mã chuẩn đoán'),
                         border: OutlineInputBorder(),
                       ),
+                      initialValue: report.diseaseCode,
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    TextField(
+                    TextFormField(
                       maxLines: 3,
                       keyboardType: TextInputType.multiline,
-                      onChanged: (value) => note = value,
+                      onChanged: (value) => report.note = value,
                       decoration: const InputDecoration(
                         label: Text('Ghi chú thêm'),
                         border: OutlineInputBorder(),
                       ),
+                      initialValue: report.note,
                     ),
                     const SizedBox(
                       height: 20,
@@ -106,19 +101,32 @@ class _DiseaseReportPageState extends ConsumerState<DiseaseReportPage> {
             Consumer(
               builder: (context, ref, child) {
                 final images = ref.watch(imagesProvider);
-                return Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                          child: SizedBox(
-                        height: 375,
-                        child: images[index],
-                      ));
-                    },
-                    itemCount: images.length,
-                  ),
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                        child: SizedBox(
+                      height: 375,
+                      child: images[index],
+                    ));
+                  },
+                  itemCount: images.length,
                 );
               },
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                final imgUrl = report.reportImageUrls?.elementAt(index);
+                return GestureDetector(
+                    child: SizedBox(
+                  height: 375,
+                  child: Image.network(imgUrl ?? ''),
+                ));
+              },
+              itemCount: report.reportImageUrls?.length,
             ),
             Consumer(
               builder: (context, ref, child) {
@@ -128,71 +136,23 @@ class _DiseaseReportPageState extends ConsumerState<DiseaseReportPage> {
                   child: ElevatedButton(
                     onPressed: () async {
                       final files = ref.read(imagesProvider.notifier).imageFiles;
-                      final isSuccess = await ref.read(diseaseReportServiceProvider).sendReport(diseaseId, note, files);
+                      final isSuccess = await ref.read(diseaseReportServiceProvider).updateReport(report, files);
+                      // final isSuccess = true;
                       if (isSuccess) {
-                        ref.read(notificationServiceProvider).showNotification('Báo cáo thành công', '', '');
+                        ref.read(notificationServiceProvider).showNotification('Cập nhật thành công', '', '');
                         Navigator.of(context).pop();
                       } else {
-                        ref.read(notificationServiceProvider).showNotification('Báo cáo thất bại', '', '');
+                        ref.read(notificationServiceProvider).showNotification('Cập nhật thất bại', '', '');
                       }
                     },
-                    child: const Text('Gửi'),
+                    child: const Text('Cập nhật'),
                   ),
                 );
               },
             )
           ],
-        );
-      }, loading: () {
-        return const Center(
-          child: CircularProgressIndicator.adaptive(),
-        );
-      }, error: (err) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text('Đã có lỗi xảy ra'),
-            TextButton(
-              onPressed: () {
-                ref.read(diseaseReportStateProvider.notifier).getDiseaseReportToday();
-              },
-              child: const Text('Thử lại'),
-            )
-          ],
-        );
-      }, approved: () {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Center(
-              child: Text(
-            'Báo cáo của bạn đã được duyệt, không cần phải báo cáo lại',
-            style: Theme.of(context).textTheme.headline6,
-          )),
-        );
-      }, submitted: (DiseaseReport report) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                'Hiện có báo cáo chưa duyệt bạn muốn cập nhật không',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) {
-                  return UpdateDiseaseReportPage(report);
-                }));
-              },
-              child: const Text('Cập nhật'),
-            ),
-          ],
-        );
-      }),
+        ),
+      ),
     );
   }
 }

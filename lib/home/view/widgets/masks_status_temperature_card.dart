@@ -76,7 +76,7 @@ class MasksStatusAndTemperatureCard extends ConsumerWidget {
                 }
 
                 return Container(
-                  height: 60,
+                  height: 50,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(
@@ -107,7 +107,7 @@ class MasksStatusAndTemperatureCard extends ConsumerWidget {
 @swidget
 Widget statusCard({required Icon icon, required String title, required Color color, required Color bgColor, required BorderRadius borderRadius}) {
   return Container(
-    height: 60,
+    height: 50,
     padding: const EdgeInsets.all(10),
     decoration: BoxDecoration(
       borderRadius: borderRadius,
