@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/authentication/service/auth_service.dart';
+import 'package:monigate_app/change_password/change_password_page.dart';
 import 'package:monigate_app/common/providers/user_provider.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
 import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
 import 'package:monigate_app/controllers/menu_controller.dart';
+import 'package:monigate_app/edit_profile/edit_profile_page.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -91,8 +93,13 @@ class MenuListView extends StatelessWidget {
               indent: 24 + 20 + 20,
             ),
             ListTile(
-              title: Text('menu_notification'.tr),
-              leading: const Icon(Icons.notifications_rounded),
+              title: const Text('Thay đổi mật khẩu'),
+              leading: const Icon(Icons.password_outlined),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                  return const ChangePasswordPage();
+                }));
+              },
             ),
             const Divider(
               height: 1,
@@ -101,6 +108,11 @@ class MenuListView extends StatelessWidget {
             ListTile(
               title: Text('menu_edit_user_info'.tr),
               leading: const Icon(Icons.edit),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                  return const EditProfilePage();
+                }));
+              },
             ),
             const Divider(
               height: 1,

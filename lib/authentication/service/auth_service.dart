@@ -79,4 +79,15 @@ class AuthService {
     );
     print('refresh token $resp');
   }
+
+  Future<String?> changePassword(String oldPass, String newPass) async {
+    try {
+      final resp = await DioClient.instance.put('/Account/change-password', data: {'oldPassword': oldPass, 'newPassword': newPass});
+      return 'success';
+    } on DioError catch (e) {
+      if (e.response?.data == 'Account is not defined or old password is incorrect') {
+        return 'wrong password';
+      }
+    }
+  }
 }
