@@ -14,11 +14,14 @@ Checkin _$CheckinFromJson(Map<String, dynamic> json) => Checkin(
       faceMaskStatus: json['faceMaskStatus'] as int,
       status: json['status'] as int,
       user: User.fromJson(json['user'] as Map<String, dynamic>),
-    );
+    )..checkoutTime = json['checkoutTime'] == null
+        ? null
+        : DateTime.parse(json['checkoutTime'] as String);
 
 Map<String, dynamic> _$CheckinToJson(Checkin instance) => <String, dynamic>{
       'id': instance.id,
       'checkinTime': instance.checkinTime.toIso8601String(),
+      'checkoutTime': instance.checkoutTime?.toIso8601String(),
       'temperature': instance.temperature,
       'faceMaskImageUrl': instance.faceMaskImageUrl,
       'faceMaskStatus': instance.faceMaskStatus,

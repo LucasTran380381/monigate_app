@@ -123,6 +123,50 @@ class HomePage extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final state = ref.watch(checkinProvider);
+                    return state.maybeWhen(
+                      hasCheckin: (checkin) {
+                        print(checkin);
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Card(
+                            shadowColor: AppColor.primaryColor,
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Icon(
+                                    Icons.login_outlined,
+                                  ),
+                                  Text(
+                                    checkin.checkinTime.shortTime,
+                                  ),
+                                  const Icon(
+                                    Icons.logout_outlined,
+                                  ),
+                                  Text(
+                                    checkin.checkoutTime?.shortTime ?? '---',
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      orElse: () => const SizedBox(),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: MasksStatusAndTemperatureCard(),

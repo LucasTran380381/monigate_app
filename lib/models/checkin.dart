@@ -7,6 +7,7 @@ part 'checkin.g.dart';
 class Checkin {
   String id;
   DateTime checkinTime;
+  DateTime? checkoutTime;
   double temperature;
   String? faceMaskImageUrl;
   int faceMaskStatus, status;
