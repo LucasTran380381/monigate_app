@@ -22,6 +22,16 @@ class ItemTitle extends StatelessWidget {
           checkin.checkinDate.shortFormat,
           style: Theme.of(context).textTheme.headline6,
         ),
+        const SizedBox(
+          height: 10,
+        ),
+        Builder(builder: (context) {
+          return checkin.checkoutDate == null
+              ? const SizedBox()
+              : Text(
+                  'Thời gian checkout: ${checkin.checkoutDate?.shortFormat}',
+                );
+        }),
         Row(
           children: [
             const Text(
@@ -43,9 +53,17 @@ class ItemTitle extends StatelessWidget {
             ),
             Tooltip(
               message: temperatureStatus.title,
-              child: Icon(
-                Icons.thermostat_outlined,
-                color: temperatureStatus.color,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.thermostat_outlined,
+                    color: temperatureStatus.color,
+                  ),
+                  Text(
+                    checkin.temperature.toString(),
+                    style: TextStyle(color: temperatureStatus.color),
+                  )
+                ],
               ),
             )
           ],

@@ -5,6 +5,8 @@ extension DateTimeExtenion on DateTime {
 
   String get shortFormat => '$formattedHour:$formattedMinute $formattedDay/$month/$year';
 
+  String get shortTime => '$formattedHour:$formattedMinute';
+
   String get shortFormatDate => '$formattedDay/$formattedMonth/$year';
 
   String get formattedMinute => minute < 10 ? '0$minute' : minute.toString();

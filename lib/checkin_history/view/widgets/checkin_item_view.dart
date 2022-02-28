@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:monigate_app/checkin_history/models/checkin_item.dart';
 import 'package:monigate_app/common/themes/color.dart';
 
@@ -15,7 +14,7 @@ class CheckinItemView extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: Row(
           children: [
             _getIconStatus(item.checkinStatusCode),
