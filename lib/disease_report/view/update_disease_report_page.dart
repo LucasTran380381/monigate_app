@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
+import 'package:monigate_app/disease_report/logic/confirm_checkbox_provider.dart';
 import 'package:monigate_app/disease_report/logic/image_provider.dart';
+import 'package:monigate_app/disease_report/logic/send_report_btn_state_provider.dart';
 import 'package:monigate_app/disease_report/models/disease_report.dart';
 import 'package:monigate_app/disease_report/services/disease_report_service.dart';
 import 'package:monigate_app/notification/services/notification_service.dart';
@@ -100,19 +102,25 @@ class UpdateDiseaseReportPage extends ConsumerWidget {
                 )),
             Consumer(
               builder: (context, ref, child) {
-                final images = ref.watch(imagesProvider);
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                        child: SizedBox(
-                      height: 375,
-                      child: images[index],
-                    ));
-                  },
-                  itemCount: images.length,
-                );
+                final state = ref.watch(imagesProvider);
+                return state.when(data: (List<Image> data) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                          child: SizedBox(
+                        height: 375,
+                        child: data[index],
+                      ));
+                    },
+                    itemCount: data.length,
+                  );
+                }, error: (Object error, StackTrace? stackTrace) {
+                  return const SizedBox();
+                }, loading: () {
+                  return const CircularProgressIndicator.adaptive();
+                });
               },
             ),
             ListView.builder(
@@ -128,23 +136,42 @@ class UpdateDiseaseReportPage extends ConsumerWidget {
               },
               itemCount: report.reportImageUrls?.length,
             ),
+            Row(
+              children: [
+                Consumer(
+                  builder: (context, ref, child) {
+                    final isChecked = ref.watch(confirmCheckboxProvider);
+                    return Checkbox(
+                      onChanged: (bool? value) {
+                        ref.read(confirmCheckboxProvider.notifier).toggle();
+                      },
+                      value: isChecked,
+                    );
+                  },
+                ),
+                const Text('Tôi cam kết khai báo đúng sự thật')
+              ],
+            ),
             Consumer(
               builder: (context, ref, child) {
+                final isReadyToSubmit = ref.watch(submitButtonProvider);
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   width: double.maxFinite,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      final files = ref.read(imagesProvider.notifier).imageFiles;
-                      final isSuccess = await ref.read(diseaseReportServiceProvider).updateReport(report, files);
-                      // final isSuccess = true;
-                      if (isSuccess) {
-                        ref.read(notificationServiceProvider).showNotification('Cập nhật thành công', '', '');
-                        Navigator.of(context).pop();
-                      } else {
-                        ref.read(notificationServiceProvider).showNotification('Cập nhật thất bại', '', '');
-                      }
-                    },
+                    onPressed: !isReadyToSubmit
+                        ? null
+                        : () async {
+                            final files = ref.read(imagesProvider.notifier).imageFiles;
+                            final isSuccess = await ref.read(diseaseReportServiceProvider).updateReport(report, files);
+                            // final isSuccess = true;
+                            if (isSuccess) {
+                              ref.read(notificationServiceProvider).showNotification('Cập nhật thành công', '', '');
+                              Navigator.of(context).pop();
+                            } else {
+                              ref.read(notificationServiceProvider).showNotification('Cập nhật thất bại', '', '');
+                            }
+                          },
                     child: const Text('Cập nhật'),
                   ),
                 );
