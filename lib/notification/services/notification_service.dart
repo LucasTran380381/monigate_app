@@ -42,8 +42,15 @@ class NotificationService {
   handleNotification(RemoteMessage message) {
     print('message: ${message.data}');
     final String? checkinStatus = message.data['checkinStatusCode'];
+    final String? checkoutDate = message.data['checkoutDate'];
     if (checkinStatus != null) {
-      showNotification('Checkin', 'Đã cập nhật checkin', 'payload');
+      checkoutDate == null
+          ? showNotification('Checkin', 'Đã cập nhật checkin', 'payload')
+          : showNotification(
+              'Checkout',
+              'Checkout thành công',
+              'pay'
+                  'load');
       _ref.read(checkinProvider.notifier).fetchCheckin();
     } else if (message.data['SourceUserId'] != null) {
       final userId = message.data['SourceUserId'] as String;
