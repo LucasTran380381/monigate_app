@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:monigate_app/checkin_history/models/checkin_item.dart';
+import 'package:monigate_app/common/service/dio_client.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
 import 'package:monigate_app/models/checkin.dart';
-import 'package:monigate_app/common/service/dio_client.dart';
 
 final checkinServiceProvider = Provider<CheckinService>((ref) {
   return CheckinService();

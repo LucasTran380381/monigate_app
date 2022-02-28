@@ -142,7 +142,7 @@ class _DiseaseReportPageState extends ConsumerState<DiseaseReportPage> {
                       );
                     },
                   ),
-                  const Text('Tôi cam kết khai báo đúng sự thật')
+                  const Expanded(child: Text('Tôi cam kết khai báo đúng sự thật và thông tin bệnh liên quan đến nhiệt độ và truyền nhiễm'))
                 ],
               ),
               Consumer(
