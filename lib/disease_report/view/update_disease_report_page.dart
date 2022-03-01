@@ -131,7 +131,10 @@ class UpdateDiseaseReportPage extends ConsumerWidget {
                 return GestureDetector(
                     child: SizedBox(
                   height: 375,
-                  child: Image.network(imgUrl ?? ''),
+                  child: Image.network(
+                    imgUrl ?? '',
+                    loadingBuilder: (context, child, process) => process == null ? child : const Center(child: CircularProgressIndicator.adaptive()),
+                  ),
                 ));
               },
               itemCount: report.reportImageUrls?.length,
