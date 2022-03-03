@@ -29,7 +29,7 @@ class ItemTitle extends StatelessWidget {
           return checkin.checkoutDate == null
               ? const SizedBox()
               : Text(
-                  'Thời gian checkout: ${checkin.checkoutDate?.shortFormat}',
+                  'Thời gian checkout: ${checkin.checkoutDate?.shortTime}',
                 );
         }),
         Row(
