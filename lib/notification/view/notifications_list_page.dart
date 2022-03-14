@@ -40,19 +40,7 @@ class NotificationListPage extends ConsumerWidget {
           loading: () => const Center(
                 child: CircularProgressIndicator.adaptive(),
               ),
-          error: (error, st) => Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('Đã có lỗi xảy ra, vui lòng thử lại ${error}'),
-                  TextButton(
-                    onPressed: () {
-                      ref.refresh(notificationProvider);
-                    },
-                    child: Text('Thử lại'),
-                  )
-                ],
-              )),
+          error: (error, st) => const Center(child: Text('Chưa có thông tin checkin'))),
     );
   }
 }

@@ -35,7 +35,7 @@ class _RootPageState extends ConsumerState<RootPage> {
     await FirebaseMessaging.instance.getToken();
     FirebaseMessaging.onMessage.listen((message) {
       print('notification');
-      ProviderContainer().read(notificationServiceProvider).handleNotification(message);
+      ref.read(notificationServiceProvider).handleNotification(message);
     });
   }
 

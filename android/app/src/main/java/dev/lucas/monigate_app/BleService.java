@@ -28,17 +28,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dev.lucas.monigate_app.database.DbHelper;
 import dev.lucas.monigate_app.models.CloseContact;
 import dev.lucas.monigate_app.models.CloseContactForDB;
 import dev.lucas.monigate_app.models.Contact;
 import dev.lucas.monigate_app.models.ContactTracing;
+import dev.lucas.monigate_app.models.FoundCloseContact;
 
 
 public class BleService extends Service {
@@ -71,6 +73,7 @@ public class BleService extends Service {
     private final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     private SharedPreferences flutterPref;
     private DbHelper _db;
+    private Map<String, FoundCloseContact> foundCloseContactMap;
 
 
     @Nullable
@@ -94,6 +97,7 @@ public class BleService extends Service {
 
         flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
         _db = new DbHelper(getApplicationContext());
+        foundCloseContactMap = new HashMap<>();
 
         //TODO: Write Timer for Request permission here
 
@@ -311,8 +315,11 @@ public class BleService extends Service {
                         final Date time = new Date();
 //                        Log.d(TAG, "onScanResult: found userId: " + userId + " in time: " + time + " with rssi: " +rssi);
 
+                        Log.d(TAG, "onScanResult: " + rssi + " " + userId + " " + time);
+                        Log.d(TAG, "onScanResult: time: " + time.getTime());
 
-                        _saveContact(userId, time);
+                        _handleFoundCloseContact(userId);
+//                        _saveContact(userId, time);
 
 
 //                        final TracingModel tracing = new TracingModel(userId, time, false);
@@ -362,6 +369,42 @@ public class BleService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void _handleFoundCloseContact(String userId) {
+        _updateFoundCloseContactList(userId);
+
+        _saveCloseContact();
+
+        for (FoundCloseContact closeContact : foundCloseContactMap.values()) {
+            if (new Date().getTime() - closeContact.getLastFoundTime().getTime() < 60 * 1000) {
+                continue;
+            }
+
+            foundCloseContactMap.remove(closeContact.getUserId());
+        }
+    }
+
+    private void _saveCloseContact() {
+        for (FoundCloseContact closeContact : foundCloseContactMap.values()) {
+            if (closeContact.getDuration() < 30) {
+                continue;
+            }
+
+            _saveContact(closeContact.getUserId(), closeContact.getFirstFoundTime());
+            foundCloseContactMap.remove(closeContact.getUserId());
+        }
+    }
+
+    private void _updateFoundCloseContactList(String userId) {
+        final FoundCloseContact closeContact = foundCloseContactMap.get(userId);
+
+        if (closeContact == null) {
+            foundCloseContactMap.put(userId, new FoundCloseContact(userId));
+            return;
+        }
+
+        closeContact.setLastFoundTime(new Date());
     }
 
     private void _saveContact(String contactWithUserId, Date time) {
@@ -432,6 +475,7 @@ public class BleService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        foundCloseContactMap = null;
         stopBroadcastBle();
         stopScanBle();
     }

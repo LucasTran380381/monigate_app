@@ -51,6 +51,8 @@ class NotificationService {
               'Checkout thành công',
               'pay'
                   'load');
+      // final checkin = Checkin.fromJson(message.data);
+      // print(checkin.id);
       _ref.read(checkinProvider.notifier).fetchCheckin();
     } else if (message.data['SourceUserId'] != null) {
       final userId = message.data['SourceUserId'] as String;

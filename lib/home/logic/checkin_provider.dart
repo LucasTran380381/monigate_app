@@ -10,16 +10,21 @@ class CheckinNotifier extends StateNotifier<CheckinState> {
   CheckinNotifier(this._checkinService) : super(const CheckinState.loading()) {
     fetchCheckin();
   }
+
   final CheckinService _checkinService;
 
   fetchCheckin() async {
     state = const CheckinState.loading();
     try {
       final result = await _checkinService.getMyCheckin();
-      print('check-in result: $result');
+      print('check-in result: ${result?.toJson()}');
       state = result != null ? CheckinState.hasCheckin(result) : const CheckinState.noCheckin();
     } catch (e) {
       state = CheckinState.error(e.toString());
     }
+  }
+
+  updateCheckinByNotification() {
+    state = const CheckinState.loading();
   }
 }
