@@ -29,14 +29,20 @@ class CheckinPage extends StatelessWidget {
               height: 20,
             ),
             Obx(() {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: HistoryCheckinPage(
-                    checkins: controller.checkins.value,
-                  ),
-                ),
-              );
+              return controller.checkins.isNotEmpty
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: HistoryCheckinPage(
+                          checkins: controller.checkins.value,
+                        ),
+                      ),
+                    )
+                  : const Expanded(
+                      child: Center(
+                        child: Text('Chưa có danh sách điểm danh'),
+                      ),
+                    );
             }),
             const SizedBox(
               height: 20,

@@ -32,7 +32,7 @@ class AuthService {
     print('firebase token: $firebaseToken');
     final body = jsonEncode({'username': username, 'password': password, 'fireBaseToken': firebaseToken});
 
-    final resp = await dio.post('$apiUrl/Account/login', data: body);
+    final resp = await dio.post('https://monigate-capstone-ubuntu.azurewebsites.net/api/Account/login', data: body);
     final pref = await SharedPreferences.getInstance();
     final map = resp.data as Map<String, dynamic>;
     final user = User.fromJson(map['user']);

@@ -74,6 +74,7 @@ public class BleService extends Service {
     private SharedPreferences flutterPref;
     private DbHelper _db;
     private Map<String, FoundCloseContact> foundCloseContactMap;
+    private Thread gcThread;
 
 
     @Nullable
@@ -95,9 +96,32 @@ public class BleService extends Service {
 
         initStatus();
 
+        foundCloseContactMap = new HashMap<>();
+
+        gcThread = new Thread(() -> {
+            while (!gcThread.isInterrupted())
+                try {
+                    Thread.sleep(1000);
+                    if (foundCloseContactMap == null) {
+                        break;
+                    }
+                    for (FoundCloseContact closeContact : foundCloseContactMap.values()) {
+                        if (new Date().getTime() - closeContact.getLastFoundTime().getTime() < 60 * 1000) {
+                            continue;
+                        }
+
+                        foundCloseContactMap.remove(closeContact.getUserId());
+                        Log.d(TAG, "_handleFoundCloseContact: remove " + closeContact.getUserId());
+                    }
+                } catch (InterruptedException e) {
+                    Log.d(TAG, "run exception: " + e);
+                    break;
+                }
+
+        });
+
         flutterPref = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
         _db = new DbHelper(getApplicationContext());
-        foundCloseContactMap = new HashMap<>();
 
         //TODO: Write Timer for Request permission here
 
@@ -155,6 +179,7 @@ public class BleService extends Service {
 
         // Check Bluetooth and enable all service
         startAll();
+        gcThread.start();
 
         return START_STICKY;
 
@@ -295,6 +320,10 @@ public class BleService extends Service {
 //                Log.d(TAG, "startScanBle: json: " + json);
 
                 // Callback khi scan bluetooth
+
+//                Garbage collector for close contact
+//              gcThread.start();
+
 //todo: fake data save to sqlite
 //                _db.addCloseContact(new CloseContactForDB("FPT000007", "Emp140983", new SimpleDateFormat("yyyy-MM-dd").parse("2022-01-23")));
                 mScanCallback = new ScanCallback() {
@@ -316,22 +345,14 @@ public class BleService extends Service {
 //                        Log.d(TAG, "onScanResult: found userId: " + userId + " in time: " + time + " with rssi: " +rssi);
 
                         Log.d(TAG, "onScanResult: " + rssi + " " + userId + " " + time);
-                        Log.d(TAG, "onScanResult: time: " + time.getTime());
+//                        Log.d(TAG, "onScanResult: time: " + time.getTime());
 
-                        _handleFoundCloseContact(userId);
+                        if (rssi > -90) {
+                            _handleFoundCloseContact(userId);
+                        }
+
 //                        _saveContact(userId, time);
 
-
-//                        final TracingModel tracing = new TracingModel(userId, time, false);
-//
-//                        boolean isDuplicate = _checkDuplicateDevice(tracing, tracingModels);
-//                        if (!isDuplicate) {
-//                            tracingModels.add(new TracingModel(new String(blidContact, StandardCharsets.UTF_8), new Date(), false));
-//                        }
-
-
-//                        Log.e(TAG, "Detect on Scan " + deviceName + " " + rssi + "  " + address
-//                                + " Service : " + serviceUUIDs + " Manufacture " + new String(blidContact, StandardCharsets.UTF_8));
                     }
 
                     @Override
@@ -376,13 +397,7 @@ public class BleService extends Service {
 
         _saveCloseContact();
 
-        for (FoundCloseContact closeContact : foundCloseContactMap.values()) {
-            if (new Date().getTime() - closeContact.getLastFoundTime().getTime() < 60 * 1000) {
-                continue;
-            }
 
-            foundCloseContactMap.remove(closeContact.getUserId());
-        }
     }
 
     private void _saveCloseContact() {
@@ -393,6 +408,7 @@ public class BleService extends Service {
 
             _saveContact(closeContact.getUserId(), closeContact.getFirstFoundTime());
             foundCloseContactMap.remove(closeContact.getUserId());
+            Log.d(TAG, "_saveCloseContact: save: " + closeContact.getUserId());
         }
     }
 
@@ -474,10 +490,10 @@ public class BleService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         foundCloseContactMap = null;
         stopBroadcastBle();
         stopScanBle();
+        super.onDestroy();
     }
 
 

@@ -23,10 +23,11 @@ class LoginController extends GetxController {
           // ProviderContainer().refresh(userProvider);
           Get.off(() => const RootPage());
         } on DioError catch (e) {
+          print(e);
           if (e.response?.statusCode == 404) {
             errorText.value = 'Sai tên đăng nhập hoặc mật khẩu';
           } else {
-            errorText.value = e.toString();
+            errorText.value = 'Đã có lỗi xảy ra';
           }
         }
       }
