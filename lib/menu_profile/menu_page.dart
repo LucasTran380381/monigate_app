@@ -10,7 +10,6 @@ import 'package:monigate_app/contact_tracing/logic/tracing_provider.dart';
 import 'package:monigate_app/contact_tracing/services/tracing_service.dart';
 import 'package:monigate_app/controllers/menu_controller.dart';
 import 'package:monigate_app/edit_profile/edit_profile_page.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -154,16 +153,20 @@ class MenuListView extends StatelessWidget {
                   title: const Text('tracing'),
                   value: state == TracingState.running,
                   onChanged: (bool value) async {
-                    if (value == false) {
-                      ref.read(tracingProvider.notifier).toggleService();
-                      return;
-                    }
+                    // if (value == false) {
+                    //   ref.read(tracingProvider.notifier).toggleService();
+                    //   return;
+                    // }
+                    //
+                    // final bleScanStatus = await Permission.bluetoothScan.request();
+                    // final bleStatus = await Permission.bluetoothAdvertise.request();
+                    // final locationStatus = await Permission.locationAlways.request();
+                    // if (bleScanStatus.isGranted && bleStatus.isGranted && locationStatus.isGranted) {
+                    //   ref.read(tracingProvider.notifier).toggleService();
 
-                    final bleStatus = await Permission.bluetoothAdvertise.request();
-                    final locationStatus = await Permission.locationAlways.request();
-                    if (bleStatus.isGranted && locationStatus.isGranted) {
-                      ref.read(tracingProvider.notifier).toggleService();
-                    }
+                    // }
+
+                    ref.read(tracingProvider.notifier).toggleService();
                   },
                 );
               },
