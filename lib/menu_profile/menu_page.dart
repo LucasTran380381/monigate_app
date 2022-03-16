@@ -160,7 +160,8 @@ class MenuListView extends StatelessWidget {
                     }
 
                     final bleStatus = await Permission.bluetoothAdvertise.request();
-                    if (bleStatus.isGranted) {
+                    final locationStatus = await Permission.locationAlways.request();
+                    if (bleStatus.isGranted && locationStatus.isGranted) {
                       ref.read(tracingProvider.notifier).toggleService();
                     }
                   },
