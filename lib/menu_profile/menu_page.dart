@@ -158,11 +158,27 @@ class MenuListView extends StatelessWidget {
                       ref.read(tracingProvider.notifier).toggleService();
                       return;
                     }
+                    final bluetoothStatuses = await [Permission.bluetoothScan, Permission.bluetoothAdvertise].request();
 
-                    final bleScanStatus = await Permission.bluetoothScan.request();
-                    final bleStatus = await Permission.bluetoothAdvertise.request();
-                    final locationStatus = await Permission.locationAlways.request();
-                    if (bleScanStatus.isGranted && bleStatus.isGranted && locationStatus.isGranted) {
+                    print('bluetooth status: $bluetoothStatuses');
+
+                    //
+                    // final locationStatuses = await [Permission.location, Permission.locationAlways].request();
+                    final locationStatus = await Permission.locationWhenInUse.request();
+                    final alwaysLocationStatus = await Permission.locationAlways.request();
+
+                    print('locationStatus statuses: $locationStatus $alwaysLocationStatus');
+
+                    if (bluetoothStatuses[Permission.bluetoothScan]!.isPermanentlyDenied ||
+                        locationStatus.isPermanentlyDenied ||
+                        alwaysLocationStatus.isDenied ||
+                        alwaysLocationStatus.isPermanentlyDenied) {
+                      openAppSettings();
+                    }
+
+                    if (bluetoothStatuses[Permission.bluetoothScan]!.isGranted &&
+                        bluetoothStatuses[Permission.bluetoothAdvertise]!.isGranted &&
+                        alwaysLocationStatus.isGranted) {
                       ref.read(tracingProvider.notifier).toggleService();
                     }
                   },
