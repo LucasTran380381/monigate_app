@@ -406,18 +406,16 @@ public class BleService extends Service {
 
 
     private void _saveCloseContact() {
-        Iterator<FoundCloseContact> iterator = foundCloseContactMap.values().iterator();
-        while (iterator.hasNext()) {
-            final FoundCloseContact closeContact = iterator.next();
+        ArrayList<FoundCloseContact> foundCloseContacts = new ArrayList<>(foundCloseContactMap.values());
+        for (int i = 0; i < foundCloseContacts.size(); i++) {
+            FoundCloseContact closeContact = foundCloseContacts.get(i);
             if (closeContact.getDuration() < 30) {
                 continue;
             }
             _saveContact(closeContact.getUserId(), closeContact.getFirstFoundTime());
             foundCloseContactMap.remove(closeContact.getUserId());
             Log.d(TAG, "_saveCloseContact: save: " + closeContact.getUserId());
-
         }
-
     }
 
     private void _updateFoundCloseContactList(String userId) {
