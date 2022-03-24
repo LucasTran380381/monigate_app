@@ -1,4 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:monigate_app/authentication/view/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenInterceptor extends Interceptor {
@@ -18,18 +22,17 @@ class TokenInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
-    if (err.response?.statusCode == 401) {
-      final errorMessage = err.response?.data as String? ?? '';
-      print('errorMessage: $errorMessage');
-      if (errorMessage.contains('Token')) {
-        // final authService = ProviderContainer().read(authServiceProvider);
-        // try {
-        //   authService.refreshToken();
-        // } on DioError catch (e) {
-        //   print('token interceptor error: $e');
-        // }
-      }
+  Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
+    final statusCode = err.response?.statusCode;
+    if (statusCode == 401) {
+      final pref = await SharedPreferences.getInstance();
+      final box = GetStorage();
+      box.remove('currentUser');
+      box.remove('token');
+      pref.remove('user');
+      pref.remove('token');
+      // ref.read(tracingProvider.notifier).stopService();
+      Get.off(() => const LoginPage());
     }
     super.onError(err, handler);
   }
