@@ -177,18 +177,22 @@ class _DiseaseReportPageState extends ConsumerState<DiseaseReportPage> {
           child: CircularProgressIndicator.adaptive(),
         );
       }, error: (err) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text('Đã có lỗi xảy ra'),
-            TextButton(
-              onPressed: () {
-                ref.read(diseaseReportStateProvider.notifier).getDiseaseReportToday();
-              },
-              child: const Text('Thử lại'),
-            )
-          ],
+        return SizedBox.expand(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Đã có lỗi xảy ra',
+              ),
+              TextButton(
+                onPressed: () {
+                  ref.read(diseaseReportStateProvider.notifier).getDiseaseReportToday();
+                },
+                child: const Text('Thử lại'),
+              )
+            ],
+          ),
         );
       }, approved: () {
         return Padding(

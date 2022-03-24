@@ -31,7 +31,10 @@ class DiseaseReportNotifier extends StateNotifier<DiseaseReportState> {
 
       state = DiseaseReportState.submitted(report);
     } on DioError catch (e) {
-      print('e');
+      if (e.response?.statusCode == 404) {
+        state = const DiseaseReportState.empty();
+        return;
+      }
       state = DiseaseReportState.error(e);
     }
   }

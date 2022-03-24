@@ -68,15 +68,15 @@ public class AppConstants {
     }
 
     // UUID Cần phát và bắt
-    public static final String BLUEZONE_UUID = "4E56"; // VN
-    public static final int BLE_ID = 8885; // XU
+    public static final String BLUEZONE_UUID = "4E57"; // VN
+    public static final int BLE_ID = 8886; // XU
     public static final String BLE_UUID_IOS = "0000" + BLUEZONE_UUID + "-73F5-4BC4-A12F-17D1AD07A667";
     public static final String BLE_UUID_ANDROID = "0000" + BLUEZONE_UUID + "-0000-1000-8000-00805F9B34FB";
     public static final String BLE_UUID_CHARECTIC = "0000" + BLUEZONE_UUID + "-73F5-4BC4-A12F-17D1AD07A689";
     public static final int DEFAUT_MANUFACTOR_IOS = 0x004c;
-    public static final byte[] DEFAUT_MANUFACTOR_BYTE_IOS_X = new byte[] {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -128, 0, 0, 0, 0, 0};
-    public static final byte[] DEFAUT_MANUFACTOR_BYTE_IOS = new byte[] {1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    public static final byte[] BLUEZONE_BYTE_NONE = new byte[] {0};
+    public static final byte[] DEFAUT_MANUFACTOR_BYTE_IOS_X = new byte[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -128, 0, 0, 0, 0, 0};
+    public static final byte[] DEFAUT_MANUFACTOR_BYTE_IOS = new byte[]{1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    public static final byte[] BLUEZONE_BYTE_NONE = new byte[]{0};
 
     // Notification
     public static final String NOTIFICATION_CHANNEL_ID = "BluezoneChannel";

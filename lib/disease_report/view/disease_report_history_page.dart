@@ -36,20 +36,22 @@ class DiseaseReportHistoryPage extends ConsumerWidget {
           child: CircularProgressIndicator.adaptive(),
         );
       }, data: (List<DiseaseReport> data) {
-        return RefreshIndicator(
-          onRefresh: () async {
-            ref.refresh(diseaseReportHistoryProvider);
-          },
-          child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              final report = data[index];
-              return DiseaseReportCard(
-                report: report,
-              );
-            },
-            itemCount: data.length,
-          ),
-        );
+        return data.isNotEmpty
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  ref.refresh(diseaseReportHistoryProvider);
+                },
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    final report = data[index];
+                    return DiseaseReportCard(
+                      report: report,
+                    );
+                  },
+                  itemCount: data.length,
+                ),
+              )
+            : const Center(child: Text('Chưa có lịch sử bệnh án'));
       }),
     );
   }

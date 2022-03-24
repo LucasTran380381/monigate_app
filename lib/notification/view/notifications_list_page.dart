@@ -22,25 +22,29 @@ class NotificationListPage extends ConsumerWidget {
       body: state.when(
           data: (notifications) {
             notifications.sort((noti1, noti2) => noti2.dateReceived.timestamp - noti1.dateReceived.timestamp);
-            return RefreshIndicator(
-              onRefresh: () async {
-                ref.refresh(notificationProvider);
-              },
-              child: ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  final notification = notifications[index];
-                  return NotificationCard(
-                    notification: notification,
+            return notifications.isNotEmpty
+                ? RefreshIndicator(
+                    onRefresh: () async {
+                      ref.refresh(notificationProvider);
+                    },
+                    child: ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        final notification = notifications[index];
+                        return NotificationCard(
+                          notification: notification,
+                        );
+                      },
+                      itemCount: notifications.length,
+                    ),
+                  )
+                : const Center(
+                    child: Text('Chưa có thông báo'),
                   );
-                },
-                itemCount: notifications.length,
-              ),
-            );
           },
           loading: () => const Center(
                 child: CircularProgressIndicator.adaptive(),
               ),
-          error: (error, st) => const Center(child: Text('Chưa có thông tin checkin'))),
+          error: (error, st) => const Center(child: Text('Chưa có thông báo'))),
     );
   }
 }

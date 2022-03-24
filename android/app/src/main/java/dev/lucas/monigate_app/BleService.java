@@ -28,10 +28,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.ClosedDirectoryStreamException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -105,11 +108,14 @@ public class BleService extends Service {
                     if (foundCloseContactMap == null) {
                         break;
                     }
-                    for (FoundCloseContact closeContact : foundCloseContactMap.values()) {
-                        if (new Date().getTime() - closeContact.getLastFoundTime().getTime() < 60 * 1000) {
+
+                    ArrayList<FoundCloseContact> foundCloseContacts = new ArrayList<>(foundCloseContactMap.values());
+
+                    for (int i = 0; i < foundCloseContacts.size(); i++) {
+                        FoundCloseContact closeContact = foundCloseContacts.get(i);
+                        if (new Date().getTime() - closeContact.getLastFoundTime().getTime() < 30 * 1000) {
                             continue;
                         }
-
                         foundCloseContactMap.remove(closeContact.getUserId());
                         Log.d(TAG, "_handleFoundCloseContact: remove " + closeContact.getUserId());
                     }
@@ -347,7 +353,7 @@ public class BleService extends Service {
                         Log.d(TAG, "onScanResult: " + rssi + " " + userId + " " + time);
 //                        Log.d(TAG, "onScanResult: time: " + time.getTime());
 
-                        if (rssi > -90) {
+                        if (rssi > -80) {
                             _handleFoundCloseContact(userId);
                         }
 
@@ -396,16 +402,16 @@ public class BleService extends Service {
         _updateFoundCloseContactList(userId);
 
         _saveCloseContact();
-
-
     }
 
+
     private void _saveCloseContact() {
-        for (FoundCloseContact closeContact : foundCloseContactMap.values()) {
+        ArrayList<FoundCloseContact> foundCloseContacts = new ArrayList<>(foundCloseContactMap.values());
+        for (int i = 0; i < foundCloseContacts.size(); i++) {
+            FoundCloseContact closeContact = foundCloseContacts.get(i);
             if (closeContact.getDuration() < 30) {
                 continue;
             }
-
             _saveContact(closeContact.getUserId(), closeContact.getFirstFoundTime());
             foundCloseContactMap.remove(closeContact.getUserId());
             Log.d(TAG, "_saveCloseContact: save: " + closeContact.getUserId());
@@ -413,6 +419,9 @@ public class BleService extends Service {
     }
 
     private void _updateFoundCloseContactList(String userId) {
+        if (foundCloseContactMap == null)
+            return;
+
         final FoundCloseContact closeContact = foundCloseContactMap.get(userId);
 
         if (closeContact == null) {
@@ -429,28 +438,28 @@ public class BleService extends Service {
             _db.addCloseContact(new CloseContactForDB(contactWithUserId, userId, time));
         }
 
-        List<CloseContact> contacts = _loadContactTracings();
-
-        for (CloseContact contact : contacts) {
-//            if exist in contact not save
-            if (contact.equals(new CloseContact(contactWithUserId, time))) {
-                return;
-            }
-        }
-
-        contacts.add(new CloseContact(contactWithUserId, time));
-
-//        Log.d(TAG, "_saveContact: " + gson.toJson(contacts));
-//        ContactTracing foundedContactTracing = _getContactTracing(time);
-//        if (foundedContactTracing == null){
-//            foundedContactTracing = new ContactTracing(time,new ArrayList<>());
-//            contactTracings.add(foundedContactTracing);
+//        List<CloseContact> contacts = _loadContactTracings();
+//
+//        for (CloseContact contact : contacts) {
+////            if exist in contact not save
+//            if (contact.equals(new CloseContact(contactWithUserId, time))) {
+//                return;
+//            }
 //        }
 //
-//        _addNewContact(foundedContactTracing, contactWithUserId);
-
-
-        flutterPref.edit().putString("flutter.close_contacts", gson.toJson(contacts)).apply();
+//        contacts.add(new CloseContact(contactWithUserId, time));
+//
+////        Log.d(TAG, "_saveContact: " + gson.toJson(contacts));
+////        ContactTracing foundedContactTracing = _getContactTracing(time);
+////        if (foundedContactTracing == null){
+////            foundedContactTracing = new ContactTracing(time,new ArrayList<>());
+////            contactTracings.add(foundedContactTracing);
+////        }
+////
+////        _addNewContact(foundedContactTracing, contactWithUserId);
+//
+//
+//        flutterPref.edit().putString("flutter.close_contacts", gson.toJson(contacts)).apply();
     }
 
     private void _addNewContact(ContactTracing contactTracing, String userId) {

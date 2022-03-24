@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/authentication/service/auth_service.dart';
 import 'package:monigate_app/common/widgets/root_page.dart';
+import 'package:monigate_app/home/logic/checkin_provider.dart';
 
 class LoginController extends GetxController {
   final authService = Get.put(AuthService());
@@ -19,6 +20,7 @@ class LoginController extends GetxController {
       if (username != null && password != null) {
         try {
           await ref.read(authServiceProvider).login(username ?? '', password ?? '');
+          ref.read(checkinProvider.notifier).fetchCheckin();
           // authService.login(username ?? '', password ?? '');
           // ProviderContainer().refresh(userProvider);
           Get.off(() => const RootPage());
