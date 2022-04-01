@@ -429,6 +429,13 @@ public class BleService extends Service {
             return;
         }
 
+        long currentTime = new Date().getTime();
+
+        if (currentTime - closeContact.getLastFoundTime().getTime() > 7000) {
+            closeContact.resetFoundTime();
+            return;
+        }
+
         closeContact.setLastFoundTime(new Date());
     }
 
