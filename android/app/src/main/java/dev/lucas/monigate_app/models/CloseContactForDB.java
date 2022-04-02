@@ -1,9 +1,6 @@
 package dev.lucas.monigate_app.models;
 
-import android.util.Log;
-
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 
 public class CloseContactForDB {
@@ -29,13 +26,12 @@ public class CloseContactForDB {
     }
 
     private String _generateId() {
-        return contactWithUserId + date.getDate() + date.getMonth() + date.getYear();
+        String formattedDate = new SimpleDateFormat("dd/MM/yy").format(date);
+        return contactWithUserId + "/" + formattedDate;
     }
 
     public String getId() {
-        Date currentDate = new Date();
-        String formattedDate = new SimpleDateFormat("dd/MM/yy").format(currentDate);
-        return contactWithUserId + "/" + formattedDate;
+        return id;
     }
 
     public String getUserId() {

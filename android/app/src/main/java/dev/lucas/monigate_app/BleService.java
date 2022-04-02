@@ -183,8 +183,6 @@ public class BleService extends Service {
         // Check Bluetooth and enable all service
         startAll();
         gcThread.start();
-
-        _saveContact("FPT0001", new Date());
         return START_STICKY;
 
     }
