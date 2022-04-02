@@ -1,5 +1,6 @@
 package dev.lucas.monigate_app.models;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Timer;
 
@@ -8,16 +9,20 @@ public class CloseContactForDB {
     private Date date;
     private boolean isSynced;
 
-    public CloseContactForDB(String contactWithUserId, String userId, Date date) {
+    public CloseContactForDB(String contactWithUserId, String userId) {
         this.contactWithUserId = contactWithUserId;
         this.userId = userId;
-        this.date = _generateDate(date);
+        this.date = _generateDate();
         this.id = _generateId();
         this.isSynced = false;
     }
 
-    private Date _generateDate(Date date) {
-        return new Date(date.getYear(), date.getMonth(), date.getDate());
+    private Date _generateDate() {
+        Date currentDate = new Date();
+        currentDate.setMinutes(0);
+        currentDate.setHours(0);
+        currentDate.setSeconds(0);
+        return currentDate;
     }
 
     private String _generateId() {

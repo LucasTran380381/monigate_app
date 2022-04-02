@@ -164,7 +164,7 @@ class HomePage extends StatelessWidget {
                     );
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 const Padding(

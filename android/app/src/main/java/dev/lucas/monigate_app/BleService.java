@@ -28,13 +28,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.ClosedDirectoryStreamException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -442,7 +439,7 @@ public class BleService extends Service {
     private void _saveContact(String contactWithUserId, Date time) {
         final String userId = flutterPref.getString("flutter.userId", "unknown");
         if (!userId.equals("unknown")) {
-            _db.addCloseContact(new CloseContactForDB(contactWithUserId, userId, time));
+            _db.addCloseContact(new CloseContactForDB(contactWithUserId, userId));
         }
 
 //        List<CloseContact> contacts = _loadContactTracings();
