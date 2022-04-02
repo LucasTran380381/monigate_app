@@ -30,7 +30,8 @@ public class CloseContactForDB {
     }
 
     public String getId() {
-        return id;
+        Date currentDate = new Date();
+        return contactWithUserId + "/" + currentDate.getDate() + currentDate.getMonth() + currentDate.getYear();
     }
 
     public String getUserId() {
