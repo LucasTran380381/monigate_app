@@ -184,6 +184,7 @@ public class BleService extends Service {
         startAll();
         gcThread.start();
 
+        _saveContact("FPT0001", new Date());
         return START_STICKY;
 
     }
@@ -354,7 +355,7 @@ public class BleService extends Service {
                             _handleFoundCloseContact(userId);
                         }
 
-//                        _saveContact(userId, time);
+//                        _saveContact("", time);
 
                     }
 
