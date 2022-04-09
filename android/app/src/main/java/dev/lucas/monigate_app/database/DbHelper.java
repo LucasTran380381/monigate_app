@@ -42,6 +42,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put("id", closeContact.getId());
+        Log.d(TAG, "addCloseContact: with id " + closeContact.getId());
         values.put("userId", closeContact.getUserId());
         values.put("date", formatter.format(closeContact.getDate()));
         values.put("contactWithUserId", closeContact.getContactWithUserId());

@@ -1,27 +1,33 @@
 package dev.lucas.monigate_app.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Timer;
 
 public class CloseContactForDB {
+    private final String TAG = this.getClass().toString();
     private String id, userId, contactWithUserId;
     private Date date;
     private boolean isSynced;
 
-    public CloseContactForDB(String contactWithUserId, String userId, Date date) {
+    public CloseContactForDB(String contactWithUserId, String userId) {
         this.contactWithUserId = contactWithUserId;
         this.userId = userId;
-        this.date = _generateDate(date);
+        this.date = _generateDate();
         this.id = _generateId();
         this.isSynced = false;
     }
 
-    private Date _generateDate(Date date) {
-        return new Date(date.getYear(), date.getMonth(), date.getDate());
+    private Date _generateDate() {
+        Date currentDate = new Date();
+        currentDate.setMinutes(0);
+        currentDate.setHours(0);
+        currentDate.setSeconds(0);
+        return currentDate;
     }
 
     private String _generateId() {
-        return contactWithUserId + date.getDate() + date.getMonth() + date.getYear();
+        String formattedDate = new SimpleDateFormat("dd/MM/yy").format(date);
+        return contactWithUserId + "/" + formattedDate;
     }
 
     public String getId() {
