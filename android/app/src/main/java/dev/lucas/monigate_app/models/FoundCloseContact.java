@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class FoundCloseContact {
     private final String userId;
-    private final Date firstFoundTime;
+    private Date firstFoundTime;
     private Date lastFoundTime;
 
     public FoundCloseContact(String userId) {
@@ -32,5 +32,10 @@ public class FoundCloseContact {
 
     public void setLastFoundTime(Date lastFoundTime) {
         this.lastFoundTime = lastFoundTime;
+    }
+
+    public void resetFoundTime() {
+        firstFoundTime = new Date();
+        lastFoundTime = new Date();
     }
 }
