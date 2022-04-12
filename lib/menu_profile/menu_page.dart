@@ -185,16 +185,16 @@ class MenuListView extends StatelessWidget {
                 );
               },
             ),
-            Obx(
-              () => SwitchListTile.adaptive(
-                secondary: const Icon(Icons.language),
-                title: Text('menu_vietnamese'.tr),
-                value: controller.isUseVietnamese.value,
-                onChanged: (bool value) {
-                  controller.changeLanguage(value);
-                },
-              ),
-            ),
+            // Obx(
+            //   () => SwitchListTile.adaptive(
+            //     secondary: const Icon(Icons.language),
+            //     title: Text('menu_vietnamese'.tr),
+            //     value: controller.isUseVietnamese.value,
+            //     onChanged: (bool value) {
+            //       controller.changeLanguage(value);
+            //     },
+            //   ),
+            // ),
             const Divider(
               height: 1,
               indent: 24 + 20 + 20,
