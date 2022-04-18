@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:monigate_app/checkin_history/logic/disease_report_message_provider.dart';
 import 'package:monigate_app/common/providers/user_provider.dart';
 import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
@@ -199,11 +200,31 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 10,),
+                const FractionallySizedBox(widthFactor: 0.9,child: DiseaseReportAdviceWidget())
               ],
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+class DiseaseReportAdviceWidget extends ConsumerWidget {
+  const DiseaseReportAdviceWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(diseaseReportMessageProvider);
+    return state.maybeWhen(data: (msg) => msg != null ? Text(msg, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.orange),) :
+    const
+    SizedBox(),
+        orElse: ()
+    => const
+    SizedBox
+      ());
   }
 }

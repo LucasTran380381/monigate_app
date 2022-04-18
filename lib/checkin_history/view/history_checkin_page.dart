@@ -1,16 +1,26 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:monigate_app/checkin_history/logic/disease_report_message_provider.dart';
 import 'package:monigate_app/checkin_history/view/widgets/checkin_list_view.dart';
 import 'package:monigate_app/common/themes/color.dart';
-
+import 'package:monigate_app/notification/services/notification_service.dart';
 import 'checkin_logic.dart';
 
-class CheckinPage extends StatelessWidget {
+class CheckinPage extends ConsumerWidget {
   const CheckinPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final controller = Get.put(CheckinLogic());
+    ref.listen<AsyncValue<String?>>(diseaseReportMessageProvider, (previous, next) {
+        if (next.value != null) {
+          ref.read(notificationServiceProvider).showNotification('Báo cáo bệnh', next.value, '');
+        }
+      },onError: (error, stackTrace) {
+      print('error $error');
+      },);
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
