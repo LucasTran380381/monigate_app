@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:monigate_app/authentication/service/auth_service.dart';
+import 'package:monigate_app/common/service/dio_client.dart';
 import 'package:monigate_app/common/widgets/root_page.dart';
 import 'package:monigate_app/home/logic/checkin_provider.dart';
 
@@ -14,6 +15,7 @@ class LoginController extends GetxController {
   String? password;
 
   login(WidgetRef ref) async {
+    print(DioClient.instance.options.baseUrl);
     errorText.value = null;
     if (formKey.currentState!.validate()) {
       formKey.currentState?.save();

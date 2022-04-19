@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
+import 'package:monigate_app/common/service/dio_client.dart';
 import 'package:monigate_app/common/widgets/header_clippath.dart';
 import 'package:monigate_app/controllers/login_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(LoginController());
+    var apiTextFieldValue = '';
     return Scaffold(
       body: SingleChildScrollView(
         child: SizedBox(
@@ -30,9 +33,32 @@ class LoginPage extends StatelessWidget {
                   height: 300,
                   width: double.infinity,
                   color: Theme.of(context).primaryColor,
-                  child: Text(
-                    'Đăng nhập',
-                    style: Theme.of(context).textTheme.headline4!.merge(const TextStyle(color: Colors.white)),
+                  child: GestureDetector(
+                    onLongPress: () => {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SizedBox(
+                            child: Column(
+                              children: [
+                                TextFormField(initialValue: DioClient.instance.options.baseUrl, onChanged: (value) => apiTextFieldValue = value,),
+                                ElevatedButton(onPressed: () async {
+                                  final pref = await SharedPreferences.getInstance();
+                                  pref.setString('apiUrl', apiTextFieldValue);
+                                  DioClient.instance.options.baseUrl = apiTextFieldValue;
+                                    Navigator.of(context).pop();
+                                },
+                                child: Text('Save'),)
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    },
+                    child: Text(
+                      'Đăng nhập',
+                      style: Theme.of(context).textTheme.headline4!.merge(const TextStyle(color: Colors.white)),
+                    ),
                   ),
                 ),
               ),
