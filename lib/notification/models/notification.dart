@@ -20,5 +20,10 @@ class Notification {
   factory Notification.fromMap(Map<String, dynamic> map) => Notification(
       id: map['id'], sourceUserId: map['sourceUserId'], dateRange: map['dateRange'] as int, dateReceived: DateTime.parse(map['dateReceived']));
 
-  String get message => 'Chú ý tiếp xúc với nhân viên $sourceUserId trong vòng $dateRange ngày gần đây';
+  String get message => 'Bạn đã tiếp xúc với nhân viên mang bệnh truyền nhiễm trong '
+      'vòng '
+      '$dateRange '
+      'ngày '
+      'gần '
+      'đây';
 }

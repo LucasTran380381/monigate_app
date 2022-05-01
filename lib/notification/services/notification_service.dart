@@ -57,7 +57,7 @@ class NotificationService {
     } else if (message.data['SourceUserId'] != null) {
       final userId = message.data['SourceUserId'] as String;
       final dateRange = int.parse(message.data['DayRange']);
-      showNotification('Chú ý tiếp xúc', 'Chú ý tiếp xúc với nhân viên $userId trong vòng $dateRange ngày gần đây', '');
+      showNotification('Chú ý tiếp xúc', 'Chú ý tiếp xúc với nhân viên trong vòng $dateRange ngày gần đây', '');
       _saveNotification(userId, dateRange);
     }
   }
