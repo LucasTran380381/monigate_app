@@ -151,7 +151,8 @@ class MenuListView extends StatelessWidget {
               builder: (context, ref, child) {
                 final state = ref.watch(tracingProvider);
                 return SwitchListTile.adaptive(
-                  title: const Text('tracing'),
+                  title: const Text('Truy vết tiếp xúc'),
+                  secondary: const Icon(Icons.health_and_safety),
                   value: state == TracingState.running,
                   onChanged: (bool value) async {
                     if (value == false) {
