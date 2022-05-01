@@ -46,7 +46,7 @@ class NotificationDetailPage extends ConsumerWidget {
                   height: 20,
                 ),
                 Text(
-                  'Chú ý tiếp xúc với nhân viên ${notification.sourceUserId}, trong các ngày sau đây:',
+                  'Chú ý tiếp xúc trong các ngày:',
                   style: Theme.of(context).textTheme.headline5,
                 ),
                 const SizedBox(
