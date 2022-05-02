@@ -50,13 +50,17 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    final pref = await SharedPreferences.getInstance();
-    box.remove('currentUser');
-    box.remove('token');
-    pref.remove('user');
-    pref.remove('token');
-    ref.read(tracingProvider.notifier).stopService();
-    Get.off(() => const LoginPage());
+    try {
+      await DioClient.instance.post("/Account/logout");
+    } finally {
+      final pref = await SharedPreferences.getInstance();
+      box.remove('currentUser');
+      box.remove('token');
+      pref.remove('user');
+      pref.remove('token');
+      ref.read(tracingProvider.notifier).stopService();
+      Get.off(() => const LoginPage());
+    }
   }
 
   Future<User> getCurrentUser() async {

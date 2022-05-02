@@ -4,6 +4,7 @@ import 'package:monigate_app/common/themes/color.dart';
 import 'package:monigate_app/common/util/datetime_extension.dart';
 import 'package:monigate_app/notification/models/notification.dart' as model;
 import 'package:monigate_app/notification/providers/notificaion_provider.dart';
+import 'package:monigate_app/notification/services/notification_service.dart';
 import 'package:monigate_app/notification/view/notification_detail_page.dart';
 
 class NotificationListPage extends ConsumerWidget {
@@ -18,6 +19,12 @@ class NotificationListPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Thông báo'),
         centerTitle: false,
+        actions: [
+          IconButton(icon: const Icon(Icons.delete), onPressed: () async {
+            await ref.read(notificationServiceProvider).deleteNotifications();
+            ref.refresh(notificationProvider);
+          },)
+        ],
       ),
       body: state.when(
           data: (notifications) {

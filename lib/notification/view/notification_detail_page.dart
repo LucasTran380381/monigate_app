@@ -46,7 +46,8 @@ class NotificationDetailPage extends ConsumerWidget {
                   height: 20,
                 ),
                 Text(
-                  'Chú ý tiếp xúc trong các ngày:',
+                  'Hãy chú ý sức khoẻ, nếu có gì bất thường hãy báo cáo với bộ phận y tế của công ty, bạn đã tiếp xúc với nhân viên mang bệnh '
+                      'truyền nhiễm trong các ngày:',
                   style: Theme.of(context).textTheme.headline5,
                 ),
                 const SizedBox(

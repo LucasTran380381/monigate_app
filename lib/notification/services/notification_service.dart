@@ -75,4 +75,9 @@ class NotificationService {
     final result = await db.query('notifications');
     return result.map((element) => Notification.fromMap(element)).toList();
   }
+
+  deleteNotifications() async {
+    final db = await _ref.read(dbHelperProvider).openDb();
+    await db.delete('notifications');
+  }
 }
